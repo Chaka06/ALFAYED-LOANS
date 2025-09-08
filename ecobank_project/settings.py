@@ -14,6 +14,7 @@ if os.environ.get('RENDER'):
         'localhost',
         '127.0.0.1',
         '.render.com',
+        '.onrender.com',
         'ecobank-pret.onrender.com',  # URL exacte de votre app Render
     ]
     
@@ -25,6 +26,7 @@ if os.environ.get('RENDER'):
     # Static files configuration for production
     STATIC_URL = '/static/'
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # LIGNE AJOUTÉE
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
     
     # Media files configuration
@@ -145,3 +147,15 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # WhiteNoise configuration
 WHITENOISE_USE_FINDERS = True
 WHITENOISE_AUTOREFRESH = True
+
+# Configuration des chemins d'images pour les attestations PDF
+ECOBANK_LOGO_PATH = os.path.join(BASE_DIR, 'static', 'images', 'logos', 'ecobank_logo.png')
+MANAGER_SIGNATURE_PATH = os.path.join(BASE_DIR, 'static', 'images', 'signatures', 'manager_signature.png')
+BANK_SEAL_PATH = os.path.join(BASE_DIR, 'static', 'images', 'seals', 'bank_seal.png')
+
+# Configuration pour gérer les fichiers statiques manquants en production
+if os.environ.get('RENDER'):
+    STATICFILES_FINDERS = [
+        'django.contrib.staticfiles.finders.FileSystemFinder',
+        'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    ]
