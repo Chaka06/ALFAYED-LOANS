@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block title %}Accueil - ECOBANK Prêts{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Hero Section -->
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6">
+            <h1 class="display-4 text-ecobank mb-4">
+                <i class="fas fa-handshake me-3"></i>
+                Prêts ECOBANK
+            </h1>
+            <p class="lead mb-4">
+                Financez vos projets avec ECOBANK. Obtenez un prêt de 5 à 50 millions de FCFA 
+                pour concrétiser vos ambitions professionnelles et personnelles.
+            </p>
+            
+            {% if not user.is_authenticated %}
+                <div class="d-grid gap-2 d-md-flex">
+                    <a href="{% url 'register' %}" class="btn btn-ecobank btn-lg me-2">
+                        <i class="fas fa-user-plus me-2"></i>S'inscrire
+                    </a>
+                    <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Se connecter
+                    </a>
+                </div>
+            {% else %}
+                <a href="{% url 'dashboard' %}" class="btn btn-ecobank btn-lg">
+                    <i class="fas fa-tachometer-alt me-2"></i>Mon tableau de bord
+                </a>
+            {% endif %}
+        </div>
+        
+        <div class="col-lg-6 text-center">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <i class="fas fa-coins text-ecobank" style="font-size: 4rem;"></i>
+                    <h3 class="mt-3 text-ecobank">Prêts Rapides</h3>
+                    <p class="text-muted">Processus simplifié et réponse rapide</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Caractéristiques -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="text-center text-ecobank mb-5">Pourquoi choisir ECOBANK ?</h2>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center border-0 shadow">
+                <div class="card-body">
+                    <i class="fas fa-money-bill-wave text-ecobank mb-3" style="font-size: 3rem;"></i>
+                    <h5 class="card-title">Montants flexibles</h5>
+                    <p class="card-text">De 5 à 50 millions de FCFA selon vos besoins</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center border-0 shadow">
+                <div class="card-body">
+                    <i class="fas fa-clock text-ecobank mb-3" style="font-size: 3rem;"></i>
+                    <h5 class="card-title">Remboursement flexible</h5>
+                    <p class="card-text">Jusqu'à 7 ans pour rembourser votre prêt</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center border-0 shadow">
+                <div class="card-body">
+                    <i class="fas fa-shield-alt text-ecobank mb-3" style="font-size: 3rem;"></i>
+                    <h5 class="card-title">Sécurisé</h5>
+                    <p class="card-text">Plateforme sécurisée et processus transparent</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comment ça marche -->
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-center text-ecobank mb-5">Comment ça marche ?</h2>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="text-center">
+                <div class="bg-ecobank text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                    <span class="fw-bold fs-4">1</span>
+                </div>
+                <h5>Inscription</h5>
+                <p class="text-muted">Créez votre compte et fournissez vos documents</p>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="text-center">
+                <div class="bg-ecobank text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                    <span class="fw-bold fs-4">2</span>
+                </div>
+                <h5>Validation</h5>
+                <p class="text-muted">Votre compte est validé par nos équipes</p>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="text-center">
+                <div class="bg-ecobank text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                    <span class="fw-bold fs-4">3</span>
+                </div>
+                <h5>Demande</h5>
+                <p class="text-muted">Soumettez votre demande de prêt avec votre projet</p>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-4">
+            <div class="text-center">
+                <div class="bg-ecobank text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                    <span class="fw-bold fs-4">4</span>
+                </div>
+                <h5>Paiement</h5>
+                <p class="text-muted">Payez 15% d'avance et obtenez votre prêt</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card bg-ecobank text-white">
+                <div class="card-body text-center py-5">
+                    <h3 class="mb-4">Prêt à démarrer votre projet ?</h3>
+                    <p class="lead mb-4">Rejoignez des milliers de clients satisfaits qui ont fait confiance à ECOBANK</p>
+                    
+                    {% if not user.is_authenticated %}
+                        <a href="{% url 'register' %}" class="btn btn-light btn-lg">
+                            <i class="fas fa-rocket me-2"></i>Commencer maintenant
+                        </a>
+                    {% else %}
+                        {% if user.userprofile.is_validated %}
+                            <a href="{% url 'loan_request' %}" class="btn btn-light btn-lg">
+                                <i class="fas fa-plus me-2"></i>Faire une demande
+                            </a>
+                        {% else %}
+                            <a href="{% url 'dashboard' %}" class="btn btn-light btn-lg">
+                                <i class="fas fa-eye me-2"></i>Voir mon statut
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
