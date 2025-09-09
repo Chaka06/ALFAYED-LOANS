@@ -9,13 +9,14 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-votre-cle-secrete-ici
 
 # RENDER Configuration
 if os.environ.get('RENDER'):
-    DEBUG = False
+    DEBUG = True  # Temporaire pour voir l'erreur exacte
     ALLOWED_HOSTS = [
         'localhost',
         '127.0.0.1',
         '.render.com',
         '.onrender.com',
-        'ecobank-pret.onrender.com',  # URL exacte de votre app Render
+        'ecobank-pret.onrender.com',
+        '*',  # Temporaire pour éliminer les problèmes d'host
     ]
     
     # Database configuration for Render PostgreSQL
