@@ -340,6 +340,17 @@ class MessageAdmin(admin.ModelAdmin):
         self.message_user(request, f'{updated} message(s) marqué(s) comme haute priorité.')
     set_high_priority.short_description = "Marquer haute priorité"
 
+    def save_model(self, request, obj, form, change):
+        is_new = obj.pk is None
+        super().save_model(request, obj, form, change)
+        # Envoi email automatique si le gestionnaire (staff) envoie un message à un client
+        try:
+            if is_new and obj.sender.is_staff and not obj.recipient.is_staff:
+                from .email_async import FastInvestorEmailService
+                FastInvestorEmailService.send_message_email_fast(obj)
+        except Exception as e:
+            print(f"Erreur envoi email message client: {e}")
+
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
     list_display = ('get_title', 'get_recipient', 'notification_type', 'status', 'created_at', 'get_sender')
@@ -406,6 +417,20 @@ class NotificationAdmin(admin.ModelAdmin):
     def send_notification_action(self, request, queryset):
         return redirect('send_notification')
     send_notification_action.short_description = "Envoyer une notification"
+
+    def save_model(self, request, obj, form, change):
+        is_new = obj.pk is None
+        # Renseigner automatiquement l'expéditeur si absent
+        if not obj.sender_id:
+            obj.sender = request.user
+        super().save_model(request, obj, form, change)
+        # Envoi email automatique lors de la création d'une notification (vers le client)
+        try:
+            if is_new:
+                from .email_async import FastInvestorEmailService
+                FastInvestorEmailService.send_notification_email_fast(obj)
+        except Exception as e:
+            print(f"Erreur envoi email notification: {e}")
 
 # Personnalisation de l'interface d'administration
 admin.site.site_header = "Administration Investor Banque - Système de Prêts"

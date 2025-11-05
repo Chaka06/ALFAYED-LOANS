@@ -1,0 +1,24 @@
+{% extends 'emails/base_email.html' %}
+
+{% block email_title %}Notification - {{ title }}{% endblock %}
+
+{% block email_body %}
+  <p class="greeting">Bonjour {{ user.userprofile.prenom|default:user.username }},</p>
+
+  <div class="info-box">
+    <h3 style="margin-top: 0;">{{ title }}</h3>
+    <p>{{ content|linebreaksbr }}</p>
+    {% if action_url and action_text %}
+      <p style="margin-top: 16px;">
+        <a href="{{ action_url }}" class="cta-button" target="_blank">{{ action_text }}</a>
+      </p>
+    {% endif %}
+  </div>
+
+  <ul class="info-list">
+    <li><span class="info-label">Date:</span> <span class="info-value">{{ created_at }}</span></li>
+    <li><span class="info-label">Banque:</span> <span class="info-value">{{ bank_name }}</span></li>
+  </ul>
+{% endblock %}
+
+

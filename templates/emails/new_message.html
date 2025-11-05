@@ -1,0 +1,25 @@
+{% extends 'emails/base_email.html' %}
+
+{% block email_title %}Nouveau message de votre gestionnaire{% endblock %}
+
+{% block email_body %}
+  <p class="greeting">Bonjour {{ user.userprofile.prenom|default:user.username }},</p>
+
+  <div class="info-box">
+    <h3 style="margin-top: 0;">{{ subject }}</h3>
+    <p>{{ content|linebreaksbr }}</p>
+  </div>
+
+  {% if loan_request %}
+  <ul class="info-list">
+    <li><span class="info-label">Prêt concerné:</span> <span class="info-value">INV-{{ loan_request.id|stringformat:"06d" }}</span></li>
+  </ul>
+  {% endif %}
+
+  <ul class="info-list">
+    <li><span class="info-label">Reçu le:</span> <span class="info-value">{{ created_at }}</span></li>
+    <li><span class="info-label">Banque:</span> <span class="info-value">{{ bank_name }}</span></li>
+  </ul>
+{% endblock %}
+
+

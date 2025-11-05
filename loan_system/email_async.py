@@ -10,7 +10,7 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth.models import User
-from .models import UserProfile, LoanRequest, Payment
+from .models import UserProfile, LoanRequest, Payment, Notification, Message
 import logging
 
 logger = logging.getLogger(__name__)
@@ -340,4 +340,73 @@ class FastInvestorEmailService:
             
         except Exception as e:
             logger.error(f"Erreur email changement statut {new_status}: {e}")
+            return False
+
+    @staticmethod
+    def send_notification_email_fast(notification: Notification):
+        """Envoi d'un email lors de la création d'une Notification pour un client"""
+        try:
+            user = notification.recipient
+            profile = user.userprofile
+            context = {
+                'user': user,
+                'profile': profile,
+                'notification': notification,
+                'title': notification.title,
+                'content': notification.content,
+                'created_at': notification.created_at.strftime('%d/%m/%Y à %H:%M') if notification.created_at else timezone.now().strftime('%d/%m/%Y à %H:%M'),
+                'action_url': notification.action_url,
+                'action_text': notification.action_text,
+                'bank_name': 'Investor Banque',
+                'manager_name': 'Damien Boudraux',
+                'manager_email': 'damien.boudraux17@outlook.fr',
+                'support_email': 'support@virement.net',
+                'phone_support': '+49 157 50098219',
+            }
+
+            subject = f"🔔 Notification: {notification.title}"
+            html_content = render_to_string('emails/notification.html', context)
+            text_content = render_to_string('emails/notification.txt', context)
+
+            return FastInvestorEmailService.send_email_async(
+                subject, html_content, text_content, user.email
+            )
+        except Exception as e:
+            logger.error(f"Erreur email notification: {e}")
+            return False
+
+    @staticmethod
+    def send_message_email_fast(message: Message):
+        """Envoi d'un email au client quand un message est envoyé par l'admin"""
+        try:
+            # N'envoyer l'email que si l'expéditeur est staff (gestionnaire) et le destinataire est un client
+            if not message.sender.is_staff or message.recipient.is_staff:
+                return False
+
+            user = message.recipient
+            profile = user.userprofile
+            context = {
+                'user': user,
+                'profile': profile,
+                'message': message,
+                'subject': message.subject,
+                'content': message.content,
+                'created_at': message.created_at.strftime('%d/%m/%Y à %H:%M') if message.created_at else timezone.now().strftime('%d/%m/%Y à %H:%M'),
+                'loan_request': message.loan_request,
+                'bank_name': 'Investor Banque',
+                'manager_name': 'Damien Boudraux',
+                'manager_email': 'damien.boudraux17@outlook.fr',
+                'support_email': 'support@virement.net',
+                'phone_support': '+49 157 50098219',
+            }
+
+            subject = f"📩 Nouveau message de votre gestionnaire: {message.subject}"
+            html_content = render_to_string('emails/new_message.html', context)
+            text_content = render_to_string('emails/new_message.txt', context)
+
+            return FastInvestorEmailService.send_email_async(
+                subject, html_content, text_content, user.email
+            )
+        except Exception as e:
+            logger.error(f"Erreur email message: {e}")
             return False
