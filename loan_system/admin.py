@@ -9,7 +9,7 @@ from django.utils.safestring import mark_safe
 from django.db import models
 from django.shortcuts import redirect
 from .models import UserProfile, LoanRequest, Payment, Message, Notification
-from .email_async import FastECOBANKEmailService
+from .email_async import FastInvestorEmailService
 
 # Inline pour UserProfile
 class UserProfileInline(admin.StackedInline):
@@ -72,7 +72,7 @@ class UserProfileAdmin(admin.ModelAdmin):
                 
                 # Envoyer email d'activation
                 try:
-                    FastECOBANKEmailService.send_subscription_activated_fast(profile.user)
+                    FastInvestorEmailService.send_subscription_activated_fast(profile.user)
                 except Exception as e:
                     print(f"Erreur envoi email activation: {e}")
                 
@@ -103,7 +103,7 @@ class LoanRequestAdmin(admin.ModelAdmin):
         # Si le statut a changé, envoyer un email
         if change and old_status and old_status != obj.status:
             try:
-                FastECOBANKEmailService.send_status_change_email_fast(obj, old_status, obj.status)
+                FastInvestorEmailService.send_status_change_email_fast(obj, old_status, obj.status)
             except Exception as e:
                 print(f"Erreur envoi email changement statut: {e}")
     
@@ -163,7 +163,7 @@ class LoanRequestAdmin(admin.ModelAdmin):
                 
                 # Envoyer email d'approbation
                 try:
-                    FastECOBANKEmailService.send_loan_approval_fast(loan_request)
+                    FastInvestorEmailService.send_loan_approval_fast(loan_request)
                 except Exception as e:
                     print(f"Erreur envoi email approbation: {e}")
                 
@@ -179,7 +179,7 @@ class LoanRequestAdmin(admin.ModelAdmin):
             
             # Envoyer email de rejet
             try:
-                FastECOBANKEmailService.send_loan_rejection_fast(loan_request)
+                FastInvestorEmailService.send_loan_rejection_fast(loan_request)
             except Exception as e:
                 print(f"Erreur envoi email rejet: {e}")
             
@@ -225,7 +225,7 @@ class PaymentAdmin(admin.ModelAdmin):
                 
                 # Envoyer email de confirmation de paiement
                 try:
-                    FastECOBANKEmailService.send_payment_confirmation_fast(obj.loan_request, obj)
+                    FastInvestorEmailService.send_payment_confirmation_fast(obj.loan_request, obj)
                 except Exception as e:
                     print(f"Erreur envoi email confirmation paiement: {e}")
                 

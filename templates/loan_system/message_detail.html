@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Message - ECOBANK{% endblock %}
+{% block title %}Message - Investor Banque{% endblock %}
 
 {% block content %}
 <div class="container my-5">
@@ -14,7 +14,7 @@
                     </h2>
                     <p class="text-muted mb-0">
                         {% if message.is_from_manager %}
-                            Message du gestionnaire ECOBANK
+                            Message du gestionnaire Investor Banque
                         {% else %}
                             Message de {{ message.sender.userprofile.prenom|default:message.sender.username }}
                         {% endif %}
@@ -63,7 +63,7 @@
                             <strong>Expéditeur :</strong><br>
                             {% if message.is_from_manager %}
                                 <i class="fas fa-user-tie text-ecobank me-2"></i>
-                                Gestionnaire ECOBANK
+                                Gestionnaire Investor Banque
                             {% else %}
                                 <i class="fas fa-user text-primary me-2"></i>
                                 {{ message.sender.userprofile.prenom|default:message.sender.username }} {{ message.sender.userprofile.nom|default:"" }}
@@ -76,7 +76,7 @@
                                 Vous
                             {% else %}
                                 <i class="fas fa-user-tie text-ecobank me-2"></i>
-                                Gestionnaire ECOBANK
+                                Gestionnaire Investor Banque
                             {% endif %}
                         </div>
                     </div>
@@ -158,7 +158,7 @@
                                             {% if reply.sender == request.user %}
                                                 Vous
                                             {% else %}
-                                                Gestionnaire ECOBANK
+                                                Gestionnaire Investor Banque
                                             {% endif %}
                                         </strong>
                                         <small class="text-muted ms-2">

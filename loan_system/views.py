@@ -12,8 +12,8 @@ from decimal import Decimal
 from .models import UserProfile, LoanRequest, Payment, Message, Notification
 from .forms import CustomUserCreationForm, UserProfileForm, LoanRequestForm, MessageForm, NotificationForm
 from .utils import generate_loan_certificate
-from .email_service import ECOBANKEmailService
-from .email_async import FastECOBANKEmailService
+from .email_service import InvestorEmailService
+from .email_async import FastInvestorEmailService
 
 def home(request):
     """Page d'accueil"""
@@ -61,7 +61,7 @@ def register(request):
                     
                     # Envoyer l'email de bienvenue (rapide)
                     try:
-                        FastECOBANKEmailService.send_welcome_email_fast(user)
+                        FastInvestorEmailService.send_welcome_email_fast(user)
                     except Exception as e:
                         print(f"Erreur envoi email bienvenue: {e}")
                     
@@ -87,7 +87,7 @@ def dashboard(request):
     if 'login_notification_sent' not in request.session:
         try:
             ip_address = request.META.get('REMOTE_ADDR', 'Non disponible')
-            FastECOBANKEmailService.send_login_alert_fast(request.user, ip_address)
+            FastInvestorEmailService.send_login_alert_fast(request.user, ip_address)
             request.session['login_notification_sent'] = True
         except Exception as e:
             print(f"Erreur envoi notification connexion: {e}")
@@ -179,7 +179,7 @@ def loan_request(request):
                     
                     # Envoyer confirmation de demande de prêt (rapide)
                     try:
-                        FastECOBANKEmailService.send_loan_request_confirmation_fast(loan_req)
+                        FastInvestorEmailService.send_loan_request_confirmation_fast(loan_req)
                     except Exception as e:
                         print(f"Erreur envoi confirmation demande prêt: {e}")
                     
@@ -415,7 +415,7 @@ def change_password(request):
             
             # Envoyer notification de changement de mot de passe (rapide)
             try:
-                FastECOBANKEmailService.send_password_change_alert_fast(request.user)
+                FastInvestorEmailService.send_password_change_alert_fast(request.user)
             except Exception as e:
                 print(f"Erreur envoi notification changement mot de passe: {e}")
             

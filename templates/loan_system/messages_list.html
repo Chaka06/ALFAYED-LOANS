@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Messages - ECOBANK{% endblock %}
+{% block title %}Messages - Investor Banque{% endblock %}
 
 {% block content %}
 <div class="container my-5">
@@ -94,7 +94,7 @@
                                                     <small class="text-muted me-3">
                                                         <i class="fas fa-user me-1"></i>
                                                         {% if message.is_from_manager %}
-                                                            Gestionnaire ECOBANK
+                                                            Gestionnaire Investor Banque
                                                         {% else %}
                                                             {{ message.sender.userprofile.prenom|default:message.sender.username }}
                                                         {% endif %}

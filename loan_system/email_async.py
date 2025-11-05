@@ -15,7 +15,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-class FastECOBANKEmailService:
+class FastInvestorEmailService:
     """Service d'envoi d'emails rapide et asynchrone pour Investor Banque"""
     
     @staticmethod
@@ -64,7 +64,7 @@ class FastECOBANKEmailService:
             html_content = render_to_string('emails/welcome_email.html', context)
             text_content = render_to_string('emails/welcome_email.txt', context)
             
-            return FastECOBANKEmailService.send_email_async(
+            return FastInvestorEmailService.send_email_async(
                 subject, html_content, text_content, user.email
             )
             
@@ -91,7 +91,7 @@ class FastECOBANKEmailService:
             html_content = render_to_string('emails/login_alert.html', context)
             text_content = render_to_string('emails/login_alert.txt', context)
             
-            return FastECOBANKEmailService.send_email_async(
+            return FastInvestorEmailService.send_email_async(
                 subject, html_content, text_content, user.email
             )
             
@@ -118,7 +118,7 @@ class FastECOBANKEmailService:
             html_content = render_to_string('emails/password_change_alert.html', context)
             text_content = render_to_string('emails/password_change_alert.txt', context)
             
-            return FastECOBANKEmailService.send_email_async(
+            return FastInvestorEmailService.send_email_async(
                 subject, html_content, text_content, user.email
             )
             
@@ -147,7 +147,7 @@ class FastECOBANKEmailService:
             html_content = render_to_string('emails/loan_request_confirmation.html', context)
             text_content = render_to_string('emails/loan_request_confirmation.txt', context)
             
-            return FastECOBANKEmailService.send_email_async(
+            return FastInvestorEmailService.send_email_async(
                 subject, html_content, text_content, user.email
             )
             
@@ -176,7 +176,7 @@ class FastECOBANKEmailService:
             html_content = render_to_string('emails/loan_approval.html', context)
             text_content = render_to_string('emails/loan_approval.txt', context)
             
-            return FastECOBANKEmailService.send_email_async(
+            return FastInvestorEmailService.send_email_async(
                 subject, html_content, text_content, user.email
             )
             
@@ -203,7 +203,7 @@ class FastECOBANKEmailService:
             html_content = render_to_string('emails/subscription_activated.html', context)
             text_content = render_to_string('emails/subscription_activated.txt', context)
             
-            return FastECOBANKEmailService.send_email_async(
+            return FastInvestorEmailService.send_email_async(
                 subject, html_content, text_content, user.email
             )
             
@@ -233,7 +233,7 @@ class FastECOBANKEmailService:
             html_content = render_to_string('emails/loan_rejection.html', context)
             text_content = render_to_string('emails/loan_rejection.txt', context)
             
-            return FastECOBANKEmailService.send_email_async(
+            return FastInvestorEmailService.send_email_async(
                 subject, html_content, text_content, user.email
             )
             
@@ -264,7 +264,7 @@ class FastECOBANKEmailService:
             html_content = render_to_string('emails/payment_confirmation.html', context)
             text_content = render_to_string('emails/payment_confirmation.txt', context)
             
-            return FastECOBANKEmailService.send_email_async(
+            return FastInvestorEmailService.send_email_async(
                 subject, html_content, text_content, user.email
             )
             
@@ -334,7 +334,7 @@ class FastECOBANKEmailService:
             html_content = render_to_string(html_template, context)
             text_content = render_to_string(txt_template, context)
             
-            return FastECOBANKEmailService.send_email_async(
+            return FastInvestorEmailService.send_email_async(
                 subject, html_content, text_content, user.email
             )
             

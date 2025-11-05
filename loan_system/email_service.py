@@ -13,7 +13,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-class ECOBANKEmailService:
+class InvestorEmailService:
     """Service d'envoi d'emails professionnels Investor Banque"""
     
     @staticmethod
