@@ -402,7 +402,7 @@ class NotificationAdmin(admin.ModelAdmin):
         # Les autres utilisateurs ne voient que leurs notifications
         return super().get_queryset(request).filter(recipient=request.user)
     
-    actions = ['mark_as_read', 'mark_as_archived', 'send_notification_action']
+    actions = ['mark_as_read', 'mark_as_archived', 'send_notification_action', 'resend_email']
     
     def mark_as_read(self, request, queryset):
         updated = queryset.filter(status='non_lu').update(status='lu', read_at=timezone.now())
@@ -424,13 +424,34 @@ class NotificationAdmin(admin.ModelAdmin):
         if not obj.sender_id:
             obj.sender = request.user
         super().save_model(request, obj, form, change)
-        # Envoi email automatique lors de la création d'une notification (vers le client)
+        # Envoi email automatique lors de la création OU modification de champs clés
         try:
+            should_send = False
             if is_new:
+                should_send = True
+            else:
+                if hasattr(form, 'changed_data'):
+                    changed = set(form.changed_data)
+                    trigger_fields = {'title', 'content', 'notification_type', 'status', 'action_url', 'action_text', 'recipient'}
+                    if changed & trigger_fields:
+                        should_send = True
+            if should_send:
                 from .email_async import FastInvestorEmailService
                 FastInvestorEmailService.send_notification_email_fast(obj)
         except Exception as e:
             print(f"Erreur envoi email notification: {e}")
+
+    def resend_email(self, request, queryset):
+        from .email_async import FastInvestorEmailService
+        sent = 0
+        for n in queryset:
+            try:
+                if FastInvestorEmailService.send_notification_email_fast(n):
+                    sent += 1
+            except Exception:
+                pass
+        self.message_user(request, f"{sent} email(s) de notification renvoyé(s).")
+    resend_email.short_description = "Renvoyer l'email au destinataire"
 
 # Personnalisation de l'interface d'administration
 admin.site.site_header = "Administration Investor Banque - Système de Prêts"
