@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Répondre - ECOBANK{% endblock %}
+{% block title %}Répondre - Investor Banque{% endblock %}
 
 {% block content %}
 <div class="container my-5">
@@ -36,7 +36,7 @@
                             <strong>De :</strong>
                             {% if parent_message.is_from_manager %}
                                 <i class="fas fa-user-tie text-ecobank me-1"></i>
-                                Gestionnaire ECOBANK
+                                Gestionnaire Investor Banque
                             {% else %}
                                 <i class="fas fa-user text-primary me-1"></i>
                                 {{ parent_message.sender.userprofile.prenom|default:parent_message.sender.username }}
@@ -113,7 +113,7 @@
                             <div class="form-text">
                                 Votre réponse sera envoyée à 
                                 {% if parent_message.sender == request.user %}
-                                    le gestionnaire ECOBANK
+                                    le gestionnaire Investor Banque
                                 {% else %}
                                     {{ parent_message.sender.userprofile.prenom|default:parent_message.sender.username }}
                                 {% endif %}.

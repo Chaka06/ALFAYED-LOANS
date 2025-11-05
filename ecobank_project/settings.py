@@ -15,7 +15,7 @@ if os.environ.get('RENDER'):
         '127.0.0.1',
         '.render.com',
         '.onrender.com',
-        'ecobank-pret.onrender.com',
+        'investor-banque-loans.onrender.com',
         '*',  # Temporaire pour éliminer les problèmes d'host
     ]
     
@@ -167,7 +167,7 @@ if os.environ.get('RENDER'):
         'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     ]
 
-# Configuration Email Professionnel ECOBANK - OPTIMISÉE
+# Configuration Email Professionnel Investor Banque - OPTIMISÉE
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.virement.net'
 EMAIL_PORT = 587
