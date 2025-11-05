@@ -10,12 +10,14 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-votre-cle-secrete-ici
 # RENDER Configuration
 if os.environ.get('RENDER'):
     DEBUG = True  # Temporaire pour voir l'erreur exacte
-    ALLOWED_HOSTS = [
+            ALLOWED_HOSTS = [
         'localhost',
         '127.0.0.1',
         '.render.com',
         '.onrender.com',
         'investor-banque-loans.onrender.com',
+                'loans-invest.com',
+                'www.loans-invest.com',
         '*',  # Temporaire pour éliminer les problèmes d'host
     ]
     
@@ -44,7 +46,14 @@ if os.environ.get('RENDER'):
     # SECURE_HSTS_PRELOAD = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_BROWSER_XSS_FILTER = True
-    X_FRAME_OPTIONS = 'DENY'
+            X_FRAME_OPTIONS = 'DENY'
+
+            # CSRF trusted origins pour domaine custom en HTTPS
+            CSRF_TRUSTED_ORIGINS = [
+                'https://investor-banque-loans.onrender.com',
+                'https://loans-invest.com',
+                'https://www.loans-invest.com',
+            ]
     
 else:
     # Development settings
