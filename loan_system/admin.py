@@ -293,7 +293,8 @@ class MessageAdmin(admin.ModelAdmin):
     def get_loan_reference(self, obj):
         if obj.loan_request:
             url = reverse('admin:loan_system_loanrequest_change', args=[obj.loan_request.id])
-            return format_html('<a href="{}" target="_blank">INV-{:06d}</a>', url, obj.loan_request.id)
+            ref = f"INV-{obj.loan_request.id:06d}"
+            return format_html('<a href="{}" target="_blank">{}</a>', url, ref)
         return '-'
     get_loan_reference.short_description = 'Prêt lié'
     
