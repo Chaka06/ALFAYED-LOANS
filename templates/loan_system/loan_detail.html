@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Détails du prêt ECO-{{ loan.id|stringformat:"06d" }} - ECOBANK{% endblock %}
+{% block title %}Détails du prêt INV-{{ loan.id|stringformat:"06d" }} - Investor Banque{% endblock %}
 
 {% block content %}
 <div class="container my-5">
@@ -10,7 +10,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h2 class="text-ecobank mb-1">
-                        <i class="fas fa-file-invoice-dollar me-2"></i>Prêt ECO-{{ loan.id|stringformat:"06d" }}
+                        <i class="fas fa-file-invoice-dollar me-2"></i>Prêt INV-{{ loan.id|stringformat:"06d" }}
                     </h2>
                     <p class="text-muted mb-0">Détails de votre demande de prêt</p>
                 </div>
@@ -80,7 +80,7 @@
                             <strong>Référence :</strong>
                         </div>
                         <div class="col-sm-8">
-                            ECO-{{ loan.id|stringformat:"06d" }}
+                            INV-{{ loan.id|stringformat:"06d" }}
                         </div>
                     </div>
                     
@@ -89,7 +89,7 @@
                             <strong>Montant demandé :</strong>
                         </div>
                         <div class="col-sm-8">
-                            <span class="text-ecobank fs-5 fw-bold">{{ loan.montant|floatformat:0 }} FCFA</span>
+                            <span class="text-ecobank fs-5 fw-bold">{{ loan.montant|floatformat:0 }} EUR</span>
                         </div>
                     </div>
                     
@@ -99,7 +99,7 @@
                                 <strong>Avance (15%) :</strong>
                             </div>
                             <div class="col-sm-8">
-                                <span class="text-success fs-6 fw-bold">{{ loan.montant_avance|floatformat:0 }} FCFA</span>
+                                <span class="text-success fs-6 fw-bold">{{ loan.montant_avance|floatformat:0 }} EUR</span>
                             </div>
                         </div>
                     {% endif %}
@@ -288,8 +288,8 @@
                     </h5>
                     <p class="mb-3">Votre demande a été approuvée ! Pour débloquer votre prêt :</p>
                     <ol class="mb-3">
-                        <li>Contactez votre gestionnaire de compte ECOBANK</li>
-                        <li>Effectuez le paiement de l'avance : <strong>{{ loan.montant_avance|floatformat:0 }} FCFA</strong></li>
+                        <li>Contactez votre gestionnaire de compte Investor Banque</li>
+                        <li>Effectuez le paiement de l'avance : <strong>{{ loan.montant_avance|floatformat:0 }} EUR</strong></li>
                         <li>Présentez votre clé de paiement : <strong class="text-primary">{{ loan.payment_key }}</strong></li>
                         <li>Le gestionnaire validera le paiement avec cette clé</li>
                         <li>Votre prêt sera immédiatement débloqué</li>
@@ -302,17 +302,17 @@
                                 <i class="fas fa-user-tie me-2"></i>Contactez votre gestionnaire
                             </h6>
                             <p class="card-text mb-3">
-                                <strong>Numéro :</strong> +225 05 04 00 12 72
+                                <strong>Numéro :</strong> +49 157 50098219
                             </p>
                             <div class="d-flex flex-wrap gap-2">
-                                <a href="https://wa.me/2250504001272?text=Bonjour,%20je%20souhaite%20effectuer%20le%20paiement%20pour%20mon%20prêt%20ECO-{{ loan.id|stringformat:'06d' }}.%20Ma%20clé%20de%20paiement%20est%20:%20{{ loan.payment_key }}" 
+                                <a href="https://wa.me/4915750098219?text=Bonjour,%20je%20souhaite%20effectuer%20le%20paiement%20pour%20mon%20prêt%20INV-{{ loan.id|stringformat:'06d' }}.%20Ma%20clé%20de%20paiement%20est%20:%20{{ loan.payment_key }}" 
                                    target="_blank" class="btn btn-success btn-sm">
                                     <i class="fab fa-whatsapp me-1"></i>WhatsApp
                                 </a>
-                                <a href="tel:+2250504001272" class="btn btn-primary btn-sm">
+                                <a href="tel:+4915750098219" class="btn btn-primary btn-sm">
                                     <i class="fas fa-phone me-1"></i>Appeler
                                 </a>
-                                <a href="sms:+2250504001272?body=Bonjour, je souhaite effectuer le paiement pour mon prêt ECO-{{ loan.id|stringformat:'06d' }}. Ma clé de paiement est : {{ loan.payment_key }}" 
+                                <a href="sms:+4915750098219?body=Bonjour, je souhaite effectuer le paiement pour mon prêt INV-{{ loan.id|stringformat:'06d' }}. Ma clé de paiement est : {{ loan.payment_key }}" 
                                    class="btn btn-info btn-sm">
                                     <i class="fas fa-sms me-1"></i>SMS
                                 </a>
@@ -339,7 +339,7 @@
                     <h5 class="alert-heading">
                         <i class="fas fa-check-circle me-2"></i>Félicitations !
                     </h5>
-                    <p class="mb-3">Votre prêt de <strong>{{ loan.montant|floatformat:0 }} FCFA</strong> a été débloqué avec succès.</p>
+                    <p class="mb-3">Votre prêt de <strong>{{ loan.montant|floatformat:0 }} EUR</strong> a été débloqué avec succès.</p>
                     <ul class="mb-3">
                         <li>Vous pouvez télécharger votre attestation de prêt officielle</li>
                         <li>Le remboursement se fait auprès de votre gestionnaire de compte</li>
@@ -356,14 +356,14 @@
                                 <i class="fas fa-user-tie me-2"></i>Pour vos remboursements
                             </h6>
                             <p class="card-text mb-3">
-                                Contactez votre gestionnaire : <strong>+225 05 04 00 12 72</strong>
+                                Contactez votre gestionnaire : <strong>+49 157 50098219</strong>
                             </p>
                             <div class="d-flex flex-wrap gap-2">
-                                <a href="https://wa.me/2250504001272?text=Bonjour,%20je%20souhaite%20effectuer%20un%20remboursement%20pour%20mon%20prêt%20ECO-{{ loan.id|stringformat:'06d' }}." 
+                                <a href="https://wa.me/4915750098219?text=Bonjour,%20je%20souhaite%20effectuer%20un%20remboursement%20pour%20mon%20prêt%20INV-{{ loan.id|stringformat:'06d' }}." 
                                    target="_blank" class="btn btn-success btn-sm">
                                     <i class="fab fa-whatsapp me-1"></i>WhatsApp
                                 </a>
-                                <a href="tel:+2250504001272" class="btn btn-primary btn-sm">
+                                <a href="tel:+4915750098219" class="btn btn-primary btn-sm">
                                     <i class="fas fa-phone me-1"></i>Appeler
                                 </a>
                             </div>
@@ -395,14 +395,14 @@
                                 <i class="fas fa-question-circle me-2"></i>Des questions ?
                             </h6>
                             <p class="card-text mb-3">
-                                Contactez votre gestionnaire : <strong>+225 05 04 00 12 72</strong>
+                                Contactez votre gestionnaire : <strong>+49 157 50098219</strong>
                             </p>
                             <div class="d-flex flex-wrap gap-2">
-                                <a href="https://wa.me/2250504001272?text=Bonjour,%20j'aimerais%20avoir%20des%20informations%20sur%20l'état%20de%20ma%20demande%20de%20prêt%20ECO-{{ loan.id|stringformat:'06d' }}." 
+                                <a href="https://wa.me/4915750098219?text=Bonjour,%20j'aimerais%20avoir%20des%20informations%20sur%20l'état%20de%20ma%20demande%20de%20prêt%20INV-{{ loan.id|stringformat:'06d' }}." 
                                    target="_blank" class="btn btn-success btn-sm">
                                     <i class="fab fa-whatsapp me-1"></i>WhatsApp
                                 </a>
-                                <a href="tel:+2250504001272" class="btn btn-primary btn-sm">
+                                <a href="tel:+4915750098219" class="btn btn-primary btn-sm">
                                     <i class="fas fa-phone me-1"></i>Appeler
                                 </a>
                             </div>
@@ -429,14 +429,14 @@
                                 <i class="fas fa-info-circle me-2"></i>Pour plus d'informations
                             </h6>
                             <p class="card-text mb-3">
-                                Contactez votre gestionnaire : <strong>+225 05 04 00 12 72</strong>
+                                Contactez votre gestionnaire : <strong>+49 157 50098219</strong>
                             </p>
                             <div class="d-flex flex-wrap gap-2">
-                                <a href="https://wa.me/2250504001272?text=Bonjour,%20ma%20demande%20de%20prêt%20ECO-{{ loan.id|stringformat:'06d' }}%20a%20été%20rejetée.%20Pouvez-vous%20m'expliquer%20les%20raisons%20?" 
+                                <a href="https://wa.me/4915750098219?text=Bonjour,%20ma%20demande%20de%20prêt%20INV-{{ loan.id|stringformat:'06d' }}%20a%20été%20rejetée.%20Pouvez-vous%20m'expliquer%20les%20raisons%20?" 
                                    target="_blank" class="btn btn-success btn-sm">
                                     <i class="fab fa-whatsapp me-1"></i>WhatsApp
                                 </a>
-                                <a href="tel:+2250504001272" class="btn btn-primary btn-sm">
+                                <a href="tel:+4915750098219" class="btn btn-primary btn-sm">
                                     <i class="fas fa-phone me-1"></i>Appeler
                                 </a>
                             </div>

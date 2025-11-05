@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import UserProfile, LoanRequest
+from .models import UserProfile, LoanRequest, Message, Notification
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(
@@ -58,10 +58,10 @@ class LoanRequestForm(forms.ModelForm):
         widgets = {
             'montant': forms.NumberInput(attrs={
                 'class': 'form-control',
-                'min': '5000000',
-                'max': '50000000',
-                'step': '100000',
-                'placeholder': 'Entre 5 000 000 et 50 000 000 FCFA'
+                'min': '5000',
+                'max': '5000000',
+                'step': '100',
+                'placeholder': 'Entre 5 000 et 5 000 000 EUR'
             }),
             'motif': forms.Textarea(attrs={
                 'class': 'form-control', 
@@ -76,8 +76,99 @@ class LoanRequestForm(forms.ModelForm):
     
     def clean_montant(self):
         montant = self.cleaned_data['montant']
-        if montant < 5000000:
-            raise forms.ValidationError('Le montant minimum est de 5 000 000 FCFA')
-        if montant > 50000000:
-            raise forms.ValidationError('Le montant maximum est de 50 000 000 FCFA')
+        if montant < 5000:
+            raise forms.ValidationError('Le montant minimum est de 5 000 EUR')
+        if montant > 5000000:
+            raise forms.ValidationError('Le montant maximum est de 5 000 000 EUR')
         return montant
+
+class MessageForm(forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = ['subject', 'content', 'priority', 'loan_request']
+        widgets = {
+            'subject': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Sujet de votre message...'
+            }),
+            'content': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 6,
+                'placeholder': 'Décrivez votre demande ou question...'
+            }),
+            'priority': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'loan_request': forms.Select(attrs={
+                'class': 'form-control'
+            })
+        }
+    
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        # Filtrer les demandes de prêt de l'utilisateur
+        if user and not user.is_superuser:
+            self.fields['loan_request'].queryset = LoanRequest.objects.filter(user=user)
+        elif user and user.is_superuser:
+            self.fields['loan_request'].queryset = LoanRequest.objects.all()
+        else:
+            self.fields['loan_request'].queryset = LoanRequest.objects.none()
+        
+        # Rendre le champ loan_request optionnel
+        self.fields['loan_request'].required = False
+        self.fields['loan_request'].empty_label = "Aucune demande de prêt liée"
+    
+    def clean_content(self):
+        content = self.cleaned_data['content']
+        if len(content.strip()) < 10:
+            raise forms.ValidationError('Le message doit contenir au moins 10 caractères.')
+        return content
+
+class NotificationForm(forms.ModelForm):
+    class Meta:
+        model = Notification
+        fields = ['recipient', 'title', 'content', 'notification_type', 'action_url', 'action_text']
+        widgets = {
+            'recipient': forms.Select(attrs={
+                'class': 'form-control',
+                'placeholder': 'Sélectionner un utilisateur...'
+            }),
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Titre de la notification...'
+            }),
+            'content': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 4,
+                'placeholder': 'Contenu de la notification...'
+            }),
+            'notification_type': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'action_url': forms.URLInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'https://exemple.com (optionnel)'
+            }),
+            'action_text': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Texte du lien (optionnel)'
+            })
+        }
+    
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        
+        # Filtrer les utilisateurs (exclure les superusers)
+        if user and user.is_superuser:
+            self.fields['recipient'].queryset = User.objects.filter(is_superuser=False)
+        else:
+            self.fields['recipient'].queryset = User.objects.none()
+    
+    def clean_content(self):
+        content = self.cleaned_data['content']
+        if len(content.strip()) < 5:
+            raise forms.ValidationError('Le contenu doit contenir au moins 5 caractères.')
+        return content

@@ -1,0 +1,29 @@
+Investor Banque Côte d'Ivoire - Notification de connexion
+
+Bonjour {{ profile.prenom|default:user.username }},
+
+Nous vous informons qu'une connexion à votre compte Investor Banque a été effectuée le {{ login_time }}.
+
+DÉTAILS DE LA CONNEXION
+========================
+Utilisateur : {{ profile.prenom|default:"" }} {{ profile.nom|default:"" }}
+Email : {{ user.email }}
+Date/Heure : {{ login_time }}
+Adresse IP : {{ ip_address }}
+
+Si cette connexion correspond à votre activité, aucune action n'est requise de votre part.
+
+SI CE N'ÉTAIT PAS VOUS
+======================
+Si vous n'êtes pas à l'origine de cette connexion, nous vous recommandons de :
+- Changer immédiatement votre mot de passe
+- Nous contacter au plus vite
+- Vérifier l'activité de votre compte
+
+Changer mon mot de passe : http://localhost:9000/profile/change-password/
+
+---
+{{ bank_name }}
+Protection de votre compte - Notification automatique
+
+Cet email a été envoyé automatiquement, merci de ne pas y répondre.

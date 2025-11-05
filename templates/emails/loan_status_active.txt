@@ -1,0 +1,32 @@
+Investor Banque - Votre prêt est maintenant actif
+
+Bonjour {{ profile.prenom|default:user.username }},
+
+🎉 EXCELLENTE NOUVELLE !
+
+Votre prêt INV-{{ loan_request.id|stringformat:"06d" }} est maintenant ACTIF depuis le {{ status_date }}.
+
+Les fonds ont été débloqués et sont disponibles sur votre compte.
+
+PRÊT ACTIVÉ AVEC SUCCÈS
+========================
+Référence du prêt : INV-{{ loan_request.id|stringformat:"06d" }}
+Montant du prêt : {{ loan_request.montant|floatformat:0 }} EUR
+Date d'activation : {{ status_date }}
+{% if loan_request.duree_remboursement_mois %}Durée de remboursement : {{ loan_request.duree_remboursement_mois }} mois{% endif %}
+
+INFORMATIONS IMPORTANTES
+========================
+- Les fonds sont maintenant disponibles sur votre compte
+- Vous recevrez un certificat de prêt par email
+- Les échéances de remboursement vous seront communiquées
+- Vous pouvez suivre votre prêt dans votre espace client
+
+Félicitations pour cette nouvelle étape dans vos projets ! Nous sommes heureux de vous accompagner.
+
+---
+{{ bank_name }}
+Banque européenne - Votre partenaire financier de confiance
+
+Pour toute question : {{ manager_email }} ou {{ phone_support }}
+

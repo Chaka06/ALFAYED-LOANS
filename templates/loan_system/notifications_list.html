@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mes notifications{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header card-header-ecobank">
+                    <h4 class="mb-0">
+                        <i class="fas fa-bell me-2"></i>Mes notifications
+                        {% if unread_count > 0 %}
+                            <span class="badge bg-danger ms-2">{{ unread_count }}</span>
+                        {% endif %}
+                    </h4>
+                </div>
+                <div class="card-body p-0">
+                    {% if notifications %}
+                        {% for notification in notifications %}
+                            <div class="border-bottom p-3 {% if notification.is_unread %}bg-light{% endif %} notification-item" 
+                                 data-notification-id="{{ notification.id }}">
+                                <div class="row align-items-center">
+                                    <div class="col-md-8">
+                                        <div class="d-flex align-items-start">
+                                            {% if notification.is_unread %}
+                                                <i class="fas fa-circle text-ecobank me-2 mt-1" style="font-size: 0.5rem;"></i>
+                                            {% else %}
+                                                <i class="fas fa-circle text-muted me-2 mt-1" style="font-size: 0.5rem;"></i>
+                                            {% endif %}
+                                            <div>
+                                                <h6 class="mb-1 {% if notification.is_unread %}fw-bold{% endif %}">
+                                                    {{ notification.title }}
+                                                </h6>
+                                                <p class="text-muted mb-1 small">
+                                                    {{ notification.content|truncatewords:20 }}
+                                                </p>
+                                                <div class="d-flex align-items-center">
+                                                    <small class="text-muted me-3">
+                                                        <i class="fas fa-user me-1"></i>
+                                                        {{ notification.sender.username }}
+                                                    </small>
+                                                    <small class="text-muted me-3">
+                                                        <i class="fas fa-clock me-1"></i>
+                                                        {{ notification.time_since_created }}
+                                                    </small>
+                                                    <span class="badge badge-{{ notification.notification_type }} me-2">
+                                                        {{ notification.get_notification_type_display }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 text-md-end">
+                                        <div class="btn-group-vertical" role="group">
+                                            {% if notification.action_url %}
+                                                <a href="{{ notification.action_url }}" class="btn btn-sm btn-outline-primary mb-1" target="_blank">
+                                                    <i class="fas fa-external-link-alt me-1"></i>{{ notification.action_text|default:"Voir" }}
+                                                </a>
+                                            {% endif %}
+                                            {% if notification.is_unread %}
+                                                <button class="btn btn-sm btn-outline-success mark-read-btn mb-1" 
+                                                        data-notification-id="{{ notification.id }}">
+                                                    <i class="fas fa-check me-1"></i>Marquer comme lu
+                                                </button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        
+                        <!-- Pagination -->
+                        {% if notifications.has_other_pages %}
+                            <div class="p-3">
+                                <nav aria-label="Pagination des notifications">
+                                    <ul class="pagination justify-content-center">
+                                        {% if notifications.has_previous %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page=1">&laquo; Première</a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ notifications.previous_page_number }}">Précédente</a>
+                                            </li>
+                                        {% endif %}
+                                        
+                                        <li class="page-item active">
+                                            <span class="page-link">
+                                                Page {{ notifications.number }} sur {{ notifications.paginator.num_pages }}
+                                            </span>
+                                        </li>
+                                        
+                                        {% if notifications.has_next %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ notifications.next_page_number }}">Suivante</a>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ notifications.paginator.num_pages }}">Dernière &raquo;</a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </nav>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center p-5">
+                            <i class="fas fa-bell-slash text-muted" style="font-size: 3rem;"></i>
+                            <h5 class="text-muted mt-3">Aucune notification</h5>
+                            <p class="text-muted">Vous n'avez pas encore reçu de notifications.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.badge-info { background-color: #17a2b8; }
+.badge-success { background-color: #28a745; }
+.badge-warning { background-color: #ffc107; color: #212529; }
+.badge-error { background-color: #dc3545; }
+.badge-urgent { background-color: #e83e8c; }
+
+.notification-item {
+    transition: all 0.3s ease;
+}
+
+.notification-item:hover {
+    background-color: #f8f9fa !important;
+}
+
+.card-header-ecobank {
+    background: linear-gradient(135deg, #008751, #00a85a);
+    color: white;
+    border-radius: 8px 8px 0 0;
+}
+
+.card {
+    border-radius: 12px;
+    overflow: hidden;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Marquer les notifications comme lues
+    document.querySelectorAll('.mark-read-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const notificationId = this.dataset.notificationId;
+            
+            fetch(`/notifications/${notificationId}/mark-read/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Mettre à jour l'interface
+                    const notificationItem = document.querySelector(`[data-notification-id="${notificationId}"]`);
+                    const circle = notificationItem.querySelector('.fas.fa-circle');
+                    const title = notificationItem.querySelector('h6');
+                    
+                    // Changer l'icône
+                    circle.classList.remove('text-ecobank');
+                    circle.classList.add('text-muted');
+                    
+                    // Enlever le gras du titre
+                    title.classList.remove('fw-bold');
+                    
+                    // Changer le fond
+                    notificationItem.classList.remove('bg-light');
+                    
+                    // Cacher le bouton
+                    this.style.display = 'none';
+                    
+                    // Mettre à jour le compteur
+                    updateNotificationCount();
+                }
+            })
+            .catch(error => console.error('Erreur:', error));
+        });
+    });
+});
+
+// Fonction pour mettre à jour le compteur de notifications
+function updateNotificationCount() {
+    fetch('/api/notification-count/')
+        .then(response => response.json())
+        .then(data => {
+            const badge = document.getElementById('notification-badge');
+            if (badge) {
+                badge.textContent = data.unread_count;
+                if (data.unread_count > 0) {
+                    badge.classList.remove('d-none');
+                } else {
+                    badge.classList.add('d-none');
+                }
+            }
+        })
+        .catch(error => console.error('Erreur lors de la mise à jour du compteur:', error));
+}
+</script>
+{% endblock %}

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Investor Banque{% endblock %}</title>
+    <style>
+        /* Reset et base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Container principal */
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        /* Header Investor Banque - Bleu sombre dominant */
+        .header {
+            background: #2C3E50;
+            border-bottom: 2px solid #34495E;
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>') repeat;
+            opacity: 0.3;
+        }
+        
+        .logo-section {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .logo-container {
+            margin-bottom: 15px;
+        }
+        
+        .email-logo {
+            height: 60px;
+            width: auto;
+            max-width: 200px;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .tagline {
+            font-size: 16px;
+            opacity: 0.95;
+            font-weight: 300;
+            margin-bottom: 15px;
+        }
+        
+        .bank-info {
+            font-size: 14px;
+            opacity: 0.8;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+        
+        /* Contenu principal */
+        .content {
+            padding: 40px 30px;
+            background: white;
+        }
+        
+        .greeting {
+            font-size: 20px;
+            color: #2C3E50;
+            font-weight: 600;
+            margin-bottom: 25px;
+            border-left: 4px solid #2C3E50;
+            padding-left: 20px;
+        }
+        
+        .message {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        
+        /* Boxes d'information */
+        .info-box {
+            background: #ECF0F1;
+            border-left: 4px solid #2C3E50;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(44, 62, 80, 0.15);
+        }
+        
+        .info-box h3 {
+            color: #2C3E50;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-box h3::before {
+            content: '🏦';
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        .info-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .info-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(44, 62, 80, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .info-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #2C3E50;
+            font-size: 14px;
+        }
+        
+        .info-value {
+            color: #34495E;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        /* Boutons d'action */
+        .cta-section {
+            text-align: center;
+            margin: 35px 0;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: #2C3E50;
+            border: 1px solid #2C3E50;
+            color: white;
+            padding: 18px 35px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.4);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .cta-button:hover {
+            background: #34495E;
+            border-color: #34495E;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 62, 80, 0.5);
+        }
+        
+        /* Alertes et notifications */
+        .alert-box {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            border: 2px solid #ffc107;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .alert-box::before {
+            content: '⚠️';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+        }
+        
+        .alert-box h3 {
+            color: #856404;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .success-box {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 2px solid #28a745;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .success-box::before {
+            content: '✅';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+        }
+        
+        .success-box h3 {
+            color: #155724;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        /* Footer - Bleu sombre dominant */
+        .footer {
+            background: #2C3E50;
+            border-top: 2px solid #34495E;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 25px;
+        }
+        
+        .footer-section h4 {
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .footer-section p {
+            font-size: 14px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 20px;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        /* Responsive */
+        @media (max-width: 600px) {
+            .email-container {
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .header, .content, .footer {
+                padding: 25px 20px;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .cta-button {
+                padding: 15px 25px;
+                font-size: 14px;
+            }
+        }
+        
+        /* Animations subtiles */
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container fade-in">
+        <!-- Header Investor Banque -->
+        <div class="header">
+        <div class="logo-section">
+            <div class="logo-container">
+                <h1 style="color: white; font-size: 28px; font-weight: bold; margin: 0; border-bottom: 2px solid #34495E; padding-bottom: 10px;">INVESTOR BANQUE</h1>
+            </div>
+            <div class="tagline" style="color: rgba(255, 255, 255, 0.95);">Banque européenne - Votre partenaire financier de confiance</div>
+            <div class="bank-info" style="color: rgba(255, 255, 255, 0.85);">
+                Europe • +49 157 50098219 • Gestionnaire : Damien Boudraux
+            </div>
+        </div>
+        </div>
+        
+        <!-- Contenu principal -->
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>🏦 Investor Banque</h4>
+                    <p>Banque européenne - Votre partenaire financier de confiance. Nous vous accompagnons dans tous vos projets financiers.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>📞 Contact</h4>
+                    <p>Email: damien.boudraux17@outlook.fr<br>
+                    Téléphone/WhatsApp: +49 157 50098219<br>
+                    Gestionnaire: Damien Boudraux</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 Investor Banque. Tous droits réservés.</p>
+                <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

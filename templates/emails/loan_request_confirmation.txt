@@ -1,0 +1,29 @@
+Investor Banque - Confirmation de demande de prêt
+
+Bonjour {{ profile.prenom|default:user.username }},
+
+Nous avons bien reçu votre demande de prêt INV-{{ loan_request.id|stringformat:"06d" }} le {{ request_date }}.
+
+DÉTAILS DE VOTRE DEMANDE
+========================
+Référence : INV-{{ loan_request.id|stringformat:"06d" }}
+Montant demandé : {{ loan_request.montant|floatformat:0 }} EUR
+Durée de remboursement : {{ loan_request.duree_remboursement_mois }} mois
+Date de demande : {{ request_date }}
+
+PROCHAINES ÉTAPES
+=================
+1. Examen de votre dossier : Notre équipe examine votre demande
+2. Validation : Vous recevrez une réponse sous 48h
+3. Si approuvé : Instructions de paiement de l'avance
+4. Déblocage : Transfert des fonds après validation
+
+Vous pouvez suivre l'avancement de votre demande dans votre espace client.
+
+Merci pour votre confiance !
+
+---
+{{ bank_name }}
+Votre partenaire financier de confiance
+
+Pour toute question : {{ support_email }}

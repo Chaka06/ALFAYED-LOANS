@@ -150,9 +150,15 @@ WHITENOISE_USE_FINDERS = True
 WHITENOISE_AUTOREFRESH = True
 
 # Configuration des chemins d'images pour les attestations PDF
-ECOBANK_LOGO_PATH = os.path.join(BASE_DIR, 'static', 'images', 'logos', 'ecobank_logo.png')
+INVESTOR_LOGO_PATH = os.path.join(BASE_DIR, 'static', 'images', 'logos', 'investor_logo.png')
 MANAGER_SIGNATURE_PATH = os.path.join(BASE_DIR, 'static', 'images', 'signatures', 'manager_signature.png')
 BANK_SEAL_PATH = os.path.join(BASE_DIR, 'static', 'images', 'seals', 'bank_seal.png')
+
+# Informations de la banque
+BANK_NAME = 'Investor Banque'
+BANK_PHONE = '+49 157 50098219'
+MANAGER_NAME = 'Damien Boudraux'
+MANAGER_EMAIL = 'damien.boudraux17@outlook.fr'
 
 # Configuration pour gérer les fichiers statiques manquants en production
 if os.environ.get('RENDER'):
@@ -160,3 +166,27 @@ if os.environ.get('RENDER'):
         'django.contrib.staticfiles.finders.FileSystemFinder',
         'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     ]
+
+# Configuration Email Professionnel ECOBANK - OPTIMISÉE
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'mail.virement.net'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = 'support@virement.net'
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD', 'Ch@coulamelo72')
+DEFAULT_FROM_EMAIL = 'Investor Banque <support@virement.net>'
+SERVER_EMAIL = 'support@virement.net'
+
+# Optimisations pour la vitesse
+EMAIL_TIMEOUT = 30
+EMAIL_CONNECTION_POOL_SIZE = 10
+EMAIL_CONNECTION_POOL_KWARGS = {
+    'max_connections': 10,
+    'max_retries': 3,
+    'retry_delay': 1,
+}
+
+# Configuration des emails automatiques
+EMAIL_AUTOMATION_ENABLED = True
+EMAIL_ASYNC_SENDING = True  # Envoi asynchrone pour la vitesse

@@ -1,0 +1,42 @@
+Investor Banque Côte d'Ivoire - Bienvenue !
+
+Bonjour {{ profile.prenom|default:user.username }},
+
+Félicitations ! Votre compte Investor Banque a été créé avec succès le {{ date_inscription }}.
+
+INFORMATIONS DE VOTRE COMPTE
+============================
+Nom complet : {{ profile.prenom|default:"" }} {{ profile.nom|default:"" }}
+Email : {{ user.email }}
+Date d'inscription : {{ date_inscription }}
+Statut : Compte actif ✅
+
+SERVICES DISPONIBLES
+====================
+✅ Demander un prêt personnel ou professionnel
+✅ Suivre vos demandes en temps réel
+✅ Communiquer avec notre équipe via la messagerie interne
+✅ Télécharger vos documents et certificats
+
+ACCÈS À VOTRE COMPTE
+====================
+Tableau de bord : http://localhost:9000/dashboard/
+
+BESOIN D'AIDE ?
+===============
+Email : {{ support_email }}
+Téléphone : {{ phone_support }}
+Site web : http://localhost:9000
+
+SÉCURITÉ DE VOTRE COMPTE
+========================
+Pour votre sécurité, nous vous recommandons de :
+- Changer votre mot de passe régulièrement
+- Ne jamais partager vos identifiants
+- Nous contacter immédiatement en cas d'activité suspecte
+
+---
+{{ bank_name }}
+Votre partenaire financier de confiance en Côte d'Ivoire
+
+Cet email a été envoyé automatiquement, merci de ne pas y répondre.

@@ -1,0 +1,32 @@
+Investor Banque Côte d'Ivoire - Instructions de paiement
+
+Bonjour {{ profile.prenom|default:user.username }},
+
+Votre prêt INV-{{ loan_request.id|stringformat:"06d" }} a été approuvé ! Voici les instructions pour effectuer le paiement de l'avance.
+
+DÉTAILS DU PAIEMENT
+===================
+Clé de paiement : {{ payment.payment_key }}
+Montant de l'avance : {{ payment.montant|floatformat:0 }} EUR
+Date limite : {{ payment_date }}
+Référence : INV-{{ loan_request.id|stringformat:"06d" }}
+
+INSTRUCTIONS IMPORTANTES
+========================
+- Conservez précieusement votre clé de paiement
+- Effectuez le paiement dans les délais impartis
+- Contactez-nous si vous avez des questions
+- Ne partagez jamais votre clé de paiement
+
+PROCHAINES ÉTAPES
+=================
+1. Effectuez le paiement avec votre clé
+2. Envoyez-nous la preuve de paiement
+3. Nous validerons votre paiement
+4. Les fonds seront débloqués sur votre compte
+
+Confirmer le paiement : http://localhost:9000/messages/send/?subject=Paiement%20avance%20prêt%20INV-{{ loan_request.id|stringformat:"06d" }}&content=Bonjour, j'ai effectué le paiement de l'avance pour mon prêt INV-{{ loan_request.id|stringformat:"06d" }}. Clé de paiement: {{ payment.payment_key }}. Montant: {{ payment.montant|floatformat:0 }} EUR. Veuillez confirmer la réception.
+
+---
+Investor Banque Côte d'Ivoire
+Votre partenaire financier de confiance

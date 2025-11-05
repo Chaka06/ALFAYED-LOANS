@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Envoyer une notification{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header card-header-ecobank">
+                    <h4 class="mb-0">
+                        <i class="fas fa-bell me-2"></i>Envoyer une notification
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.recipient.id_for_label }}" class="form-label">
+                                <i class="fas fa-user me-1"></i>Destinataire
+                            </label>
+                            {{ form.recipient }}
+                            {% if form.recipient.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.recipient.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.title.id_for_label }}" class="form-label">
+                                <i class="fas fa-tag me-1"></i>Titre
+                            </label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.title.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.content.id_for_label }}" class="form-label">
+                                <i class="fas fa-comment me-1"></i>Contenu
+                            </label>
+                            {{ form.content }}
+                            {% if form.content.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.content.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.notification_type.id_for_label }}" class="form-label">
+                                <i class="fas fa-exclamation-triangle me-1"></i>Type de notification
+                            </label>
+                            {{ form.notification_type }}
+                            {% if form.notification_type.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.notification_type.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.action_url.id_for_label }}" class="form-label">
+                                        <i class="fas fa-link me-1"></i>Lien d'action (optionnel)
+                                    </label>
+                                    {{ form.action_url }}
+                                    {% if form.action_url.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {% for error in form.action_url.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.action_text.id_for_label }}" class="form-label">
+                                        <i class="fas fa-text-width me-1"></i>Texte du lien (optionnel)
+                                    </label>
+                                    {{ form.action_text }}
+                                    {% if form.action_text.errors %}
+                                        <div class="text-danger small mt-1">
+                                            {% for error in form.action_text.errors %}{{ error }}{% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-ecobank">
+                                <i class="fas fa-paper-plane me-1"></i>Envoyer la notification
+                            </button>
+                            <a href="{% url 'admin:loan_system_notification_changelist' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Retour à la liste
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 12px 15px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #008751;
+    box-shadow: 0 0 0 0.2rem rgba(0, 135, 81, 0.25);
+}
+
+.form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.btn-ecobank {
+    background: linear-gradient(135deg, #008751, #00a85a);
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-ecobank:hover {
+    background: linear-gradient(135deg, #007a47, #009952);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 135, 81, 0.3);
+}
+
+.card-header-ecobank {
+    background: linear-gradient(135deg, #008751, #00a85a);
+    color: white;
+    border-radius: 8px 8px 0 0;
+}
+
+.card {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.card-body {
+    padding: 30px;
+}
+</style>
+{% endblock %}

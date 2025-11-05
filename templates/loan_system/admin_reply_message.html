@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Répondre au message{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-reply me-2"></i>Répondre au message
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <!-- Message original -->
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-envelope me-1"></i>Message original :</h6>
+                        <p class="mb-1"><strong>De :</strong> 
+                            {% if parent_message.is_from_manager %}
+                                <span class="text-success">👨‍💼 Gestionnaire</span>
+                            {% else %}
+                                <span class="text-primary">👤 {{ parent_message.sender.username }}</span>
+                            {% endif %}
+                        </p>
+                        <p class="mb-1"><strong>Sujet :</strong> {{ parent_message.subject }}</p>
+                        <p class="mb-1"><strong>Date :</strong> {{ parent_message.created_at|date:"d/m/Y à H:i" }}</p>
+                        <div class="mt-2 p-2 bg-light rounded">
+                            {{ parent_message.content|linebreaks }}
+                        </div>
+                    </div>
+
+                    <!-- Formulaire de réponse -->
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.subject.id_for_label }}" class="form-label">
+                                <i class="fas fa-tag me-1"></i>Sujet
+                            </label>
+                            {{ form.subject }}
+                            {% if form.subject.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.subject.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.content.id_for_label }}" class="form-label">
+                                <i class="fas fa-comment me-1"></i>Votre réponse
+                            </label>
+                            {{ form.content }}
+                            {% if form.content.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.content.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.priority.id_for_label }}" class="form-label">
+                                <i class="fas fa-exclamation-triangle me-1"></i>Priorité
+                            </label>
+                            {{ form.priority }}
+                            {% if form.priority.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.priority.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        {% if form.loan_request %}
+                        <div class="mb-3">
+                            <label for="{{ form.loan_request.id_for_label }}" class="form-label">
+                                <i class="fas fa-file-invoice me-1"></i>Demande de prêt liée (optionnel)
+                            </label>
+                            {{ form.loan_request }}
+                            {% if form.loan_request.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.loan_request.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-paper-plane me-1"></i>Envoyer la réponse
+                            </button>
+                            <a href="{% url 'admin:loan_system_message_changelist' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Retour à la liste
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

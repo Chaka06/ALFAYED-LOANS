@@ -1,0 +1,304 @@
+{% extends 'base.html' %}
+
+{% block title %}Répondre - ECOBANK{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- En-tête -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="text-ecobank mb-1">
+                        <i class="fas fa-reply me-2"></i>Répondre au message
+                    </h2>
+                    <p class="text-muted mb-0">Réponse à : {{ parent_message.subject }}</p>
+                </div>
+                <a href="{% url 'message_detail' parent_message.id %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Retour au message
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message original -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header card-header-ecobank">
+                    <h6 class="mb-0">
+                        <i class="fas fa-envelope me-2"></i>Message original
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>De :</strong>
+                            {% if parent_message.is_from_manager %}
+                                <i class="fas fa-user-tie text-ecobank me-1"></i>
+                                Gestionnaire ECOBANK
+                            {% else %}
+                                <i class="fas fa-user text-primary me-1"></i>
+                                {{ parent_message.sender.userprofile.prenom|default:parent_message.sender.username }}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Date :</strong>
+                            <i class="fas fa-clock text-muted me-1"></i>
+                            {{ parent_message.created_at|date:"d/m/Y à H:i" }}
+                        </div>
+                    </div>
+                    <div class="message-content bg-light p-3 rounded">
+                        {{ parent_message.content|linebreaks }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulaire de réponse -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header card-header-ecobank">
+                    <h6 class="mb-0">
+                        <i class="fas fa-edit me-2"></i>Votre réponse
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                <label for="{{ form.subject.id_for_label }}" class="form-label">
+                                    <i class="fas fa-tag me-1"></i>Sujet *
+                                </label>
+                                {{ form.subject }}
+                                {% if form.subject.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.subject.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.priority.id_for_label }}" class="form-label">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>Priorité
+                                </label>
+                                {{ form.priority }}
+                                {% if form.priority.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in form.priority.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.content.id_for_label }}" class="form-label">
+                                <i class="fas fa-comment me-1"></i>Votre réponse *
+                            </label>
+                            {{ form.content }}
+                            {% if form.content.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.content.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">
+                                Votre réponse sera envoyée à 
+                                {% if parent_message.sender == request.user %}
+                                    le gestionnaire ECOBANK
+                                {% else %}
+                                    {{ parent_message.sender.userprofile.prenom|default:parent_message.sender.username }}
+                                {% endif %}.
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.loan_request.id_for_label }}" class="form-label">
+                                <i class="fas fa-link me-1"></i>Demande de prêt liée (optionnel)
+                            </label>
+                            {{ form.loan_request }}
+                            {% if form.loan_request.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.loan_request.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="urgent" name="urgent">
+                                <label class="form-check-label" for="urgent">
+                                    <i class="fas fa-exclamation-triangle text-warning me-1"></i>
+                                    Marquer comme urgent
+                                </label>
+                            </div>
+                            <div>
+                                <a href="{% url 'message_detail' parent_message.id %}" class="btn btn-outline-secondary me-2">
+                                    <i class="fas fa-times me-1"></i>Annuler
+                                </a>
+                                <button type="submit" class="btn btn-ecobank">
+                                    <i class="fas fa-paper-plane me-1"></i>Envoyer la réponse
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Conseils pour répondre -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header card-header-ecobank">
+                    <h6 class="mb-0">
+                        <i class="fas fa-lightbulb me-2"></i>Conseils pour une bonne réponse
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <strong>Restez courtois</strong> et professionnel
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <strong>Répondez</strong> à tous les points soulevés
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <strong>Soyez précis</strong> dans vos explications
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <strong>Posez des questions</strong> si nécessaire
+                        </li>
+                        <li>
+                            <i class="fas fa-check text-success me-2"></i>
+                            <strong>Proposez</strong> des solutions si possible
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Réponses rapides -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header card-header-ecobank">
+                    <h6 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>Réponses rapides
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary btn-sm" onclick="setContent('Merci pour votre message. Je vais examiner votre demande et vous répondre rapidement.')">
+                            <i class="fas fa-thumbs-up me-1"></i>Accusé de réception
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="setContent('J\'ai bien reçu votre message. Pouvez-vous me donner plus de détails sur...')">
+                            <i class="fas fa-question me-1"></i>Demander des précisions
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="setContent('Je vous confirme que votre demande est en cours de traitement.')">
+                            <i class="fas fa-check me-1"></i>Confirmer le traitement
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm" onclick="setContent('Je vous remercie pour votre patience. Nous travaillons activement sur votre dossier.')">
+                            <i class="fas fa-clock me-1"></i>Rassurer le client
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Historique des réponses -->
+            {% if parent_message.replies.all %}
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header card-header-ecobank">
+                        <h6 class="mb-0">
+                            <i class="fas fa-history me-2"></i>Réponses précédentes ({{ parent_message.replies.count }})
+                        </h6>
+                    </div>
+                    <div class="card-body p-0">
+                        {% for reply in parent_message.replies.all|slice:":3" %}
+                            <div class="border-bottom p-2">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <small class="text-muted">
+                                            {% if reply.sender == request.user %}
+                                                Vous
+                                            {% else %}
+                                                Gestionnaire
+                                            {% endif %}
+                                        </small>
+                                        <p class="small mb-1">{{ reply.content|truncatewords:10 }}</p>
+                                    </div>
+                                    <small class="text-muted">{{ reply.created_at|date:"d/m H:i" }}</small>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        {% if parent_message.replies.count > 3 %}
+                            <div class="p-2 text-center">
+                                <small class="text-muted">
+                                    Et {{ parent_message.replies.count|add:"-3" }} autre(s) réponse(s)
+                                </small>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+function setContent(content) {
+    document.getElementById('{{ form.content.id_for_label }}').value = content;
+}
+
+// Auto-resize textarea
+document.addEventListener('DOMContentLoaded', function() {
+    const textarea = document.getElementById('{{ form.content.id_for_label }}');
+    if (textarea) {
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
+    }
+    
+    // Gestion de la priorité urgente
+    const urgentCheckbox = document.getElementById('urgent');
+    const prioritySelect = document.getElementById('{{ form.priority.id_for_label }}');
+    
+    if (urgentCheckbox && prioritySelect) {
+        urgentCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                prioritySelect.value = 'urgente';
+            } else {
+                prioritySelect.value = 'normale';
+            }
+        });
+    }
+});
+</script>
+
+<style>
+.message-content {
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.message-content p {
+    margin-bottom: 0.5rem;
+}
+
+.message-content p:last-child {
+    margin-bottom: 0;
+}
+</style>
+{% endblock %}

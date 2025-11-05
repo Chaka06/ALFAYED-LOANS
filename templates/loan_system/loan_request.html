@@ -21,9 +21,9 @@
                             <i class="fas fa-info-circle me-2"></i>Conditions du prêt
                         </h6>
                         <ul class="mb-0">
-                            <li><strong>Montant :</strong> Entre 5 000 000 et 50 000 000 FCFA</li>
+                            <li><strong>Montant :</strong> Entre 5 000 et 5 000 000 EUR</li>
                             <li><strong>Avance requise :</strong> 15% du montant demandé</li>
-                            <li><strong>Durée de remboursement :</strong> Jusqu'à 7 ans (84 mois)</li>
+                            <li><strong>Durée de remboursement :</strong> De 12 mois à 25 ans (300 mois maximum)</li>
                             <li><strong>Validation :</strong> Sous réserve d'approbation par nos équipes</li>
                         </ul>
                     </div>
@@ -39,7 +39,7 @@
                             {{ form.montant }}
                             <div class="form-text">
                                 <i class="fas fa-calculator me-1"></i>
-                                Montant entre 5 000 000 et 50 000 000 FCFA
+                                Montant entre 5 000 et 5 000 000 EUR
                             </div>
                             {% if form.montant.errors %}
                                 <div class="text-danger small">{{ form.montant.errors }}</div>
@@ -50,11 +50,11 @@
                                 <div class="row">
                                     <div class="col-6">
                                         <strong>Montant demandé :</strong><br>
-                                        <span id="montant-display" class="text-ecobank">0 FCFA</span>
+                                        <span id="montant-display" class="text-ecobank">0 EUR</span>
                                     </div>
                                     <div class="col-6">
                                         <strong>Avance à payer (15%) :</strong><br>
-                                        <span id="avance-display" class="text-success">0 FCFA</span>
+                                        <span id="avance-display" class="text-success">0 EUR</span>
                                     </div>
                                 </div>
                             </div>
@@ -141,8 +141,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const montantFormatted = new Intl.NumberFormat('fr-FR').format(montant);
             const avanceFormatted = new Intl.NumberFormat('fr-FR').format(avance);
             
-            montantDisplay.textContent = montantFormatted + ' FCFA';
-            avanceDisplay.textContent = avanceFormatted + ' FCFA';
+            montantDisplay.textContent = montantFormatted + ' EUR';
+            avanceDisplay.textContent = avanceFormatted + ' EUR';
             
             avanceInfo.style.display = 'block';
         } else {

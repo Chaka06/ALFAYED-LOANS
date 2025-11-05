@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Accueil - ECOBANK Prêts{% endblock %}
+{% block title %}Accueil - Investor Banque Prêts{% endblock %}
 
 {% block content %}
 <div class="container my-5">
@@ -9,10 +9,10 @@
         <div class="col-lg-6">
             <h1 class="display-4 text-ecobank mb-4">
                 <i class="fas fa-handshake me-3"></i>
-                Prêts ECOBANK
+                Prêts Investor Banque
             </h1>
             <p class="lead mb-4">
-                Financez vos projets avec ECOBANK. Obtenez un prêt de 5 à 50 millions de FCFA 
+                Financez vos projets avec Investor Banque. Obtenez un prêt de 5 000 à 5 000 000 EUR 
                 pour concrétiser vos ambitions professionnelles et personnelles.
             </p>
             
@@ -46,7 +46,7 @@
     <!-- Caractéristiques -->
     <div class="row mb-5">
         <div class="col-12">
-            <h2 class="text-center text-ecobank mb-5">Pourquoi choisir ECOBANK ?</h2>
+            <h2 class="text-center text-ecobank mb-5">Pourquoi choisir Investor Banque ?</h2>
         </div>
         
         <div class="col-md-4 mb-4">
@@ -54,7 +54,7 @@
                 <div class="card-body">
                     <i class="fas fa-money-bill-wave text-ecobank mb-3" style="font-size: 3rem;"></i>
                     <h5 class="card-title">Montants flexibles</h5>
-                    <p class="card-text">De 5 à 50 millions de FCFA selon vos besoins</p>
+                    <p class="card-text">De 5 000 à 5 000 000 EUR selon vos besoins</p>
                 </div>
             </div>
         </div>
@@ -64,7 +64,7 @@
                 <div class="card-body">
                     <i class="fas fa-clock text-ecobank mb-3" style="font-size: 3rem;"></i>
                     <h5 class="card-title">Remboursement flexible</h5>
-                    <p class="card-text">Jusqu'à 7 ans pour rembourser votre prêt</p>
+                    <p class="card-text">De 12 mois à 25 ans pour rembourser votre prêt</p>
                 </div>
             </div>
         </div>
@@ -133,7 +133,7 @@
             <div class="card bg-ecobank text-white">
                 <div class="card-body text-center py-5">
                     <h3 class="mb-4">Prêt à démarrer votre projet ?</h3>
-                    <p class="lead mb-4">Rejoignez des milliers de clients satisfaits qui ont fait confiance à ECOBANK</p>
+                    <p class="lead mb-4">Rejoignez des milliers de clients satisfaits qui ont fait confiance à Investor Banque</p>
                     
                     {% if not user.is_authenticated %}
                         <a href="{% url 'register' %}" class="btn btn-light btn-lg">

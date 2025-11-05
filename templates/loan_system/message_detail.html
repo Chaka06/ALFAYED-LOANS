@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+
+{% block title %}Message - ECOBANK{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- En-tête -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="text-ecobank mb-1">
+                        <i class="fas fa-envelope-open me-2"></i>{{ message.subject }}
+                    </h2>
+                    <p class="text-muted mb-0">
+                        {% if message.is_from_manager %}
+                            Message du gestionnaire ECOBANK
+                        {% else %}
+                            Message de {{ message.sender.userprofile.prenom|default:message.sender.username }}
+                        {% endif %}
+                        • {{ message.created_at|date:"d/m/Y à H:i" }}
+                    </p>
+                </div>
+                <div class="btn-group">
+                    <a href="{% url 'reply_message' message.id %}" class="btn btn-ecobank">
+                        <i class="fas fa-reply me-2"></i>Répondre
+                    </a>
+                    <a href="{% url 'messages_list' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Retour
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Informations du message -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header card-header-ecobank">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h6 class="mb-0">
+                                <i class="fas fa-info-circle me-2"></i>Informations du message
+                            </h6>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            {% if message.priority == 'urgente' %}
+                                <span class="badge bg-danger">Urgent</span>
+                            {% elif message.priority == 'haute' %}
+                                <span class="badge bg-warning">Haute priorité</span>
+                            {% elif message.priority == 'normale' %}
+                                <span class="badge bg-info">Normale</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Faible</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Expéditeur :</strong><br>
+                            {% if message.is_from_manager %}
+                                <i class="fas fa-user-tie text-ecobank me-2"></i>
+                                Gestionnaire ECOBANK
+                            {% else %}
+                                <i class="fas fa-user text-primary me-2"></i>
+                                {{ message.sender.userprofile.prenom|default:message.sender.username }} {{ message.sender.userprofile.nom|default:"" }}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Destinataire :</strong><br>
+                            {% if message.recipient == request.user %}
+                                <i class="fas fa-user text-success me-2"></i>
+                                Vous
+                            {% else %}
+                                <i class="fas fa-user-tie text-ecobank me-2"></i>
+                                Gestionnaire ECOBANK
+                            {% endif %}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Date d'envoi :</strong><br>
+                            <i class="fas fa-clock text-muted me-2"></i>
+                            {{ message.created_at|date:"d/m/Y à H:i" }}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Statut :</strong><br>
+                            {% if message.status == 'non_lu' %}
+                                <span class="badge bg-warning">
+                                    <i class="fas fa-envelope me-1"></i>Non lu
+                                </span>
+                            {% elif message.status == 'lu' %}
+                                <span class="badge bg-info">
+                                    <i class="fas fa-envelope-open me-1"></i>Lu
+                                </span>
+                            {% elif message.status == 'repondu' %}
+                                <span class="badge bg-success">
+                                    <i class="fas fa-reply me-1"></i>Répondu
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if message.loan_request %}
+                        <hr>
+                        <div class="row">
+                            <div class="col-12">
+                                <strong>Demande de prêt liée :</strong><br>
+                                <a href="{% url 'loan_detail' message.loan_request.id %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-link me-1"></i>
+                                    INV-{{ message.loan_request.id|stringformat:"06d" }} - {{ message.loan_request.montant|floatformat:0 }} EUR
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenu du message -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header card-header-ecobank">
+                    <h6 class="mb-0">
+                        <i class="fas fa-file-alt me-2"></i>Contenu du message
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="message-content">
+                        {{ message.content|linebreaks }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Réponses -->
+    {% if replies %}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header card-header-ecobank">
+                        <h6 class="mb-0">
+                            <i class="fas fa-comments me-2"></i>Réponses ({{ replies|length }})
+                        </h6>
+                    </div>
+                    <div class="card-body p-0">
+                        {% for reply in replies %}
+                            <div class="border-bottom p-3 {% if reply.sender == request.user %}bg-light{% endif %}">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <strong>
+                                            {% if reply.sender == request.user %}
+                                                Vous
+                                            {% else %}
+                                                Gestionnaire ECOBANK
+                                            {% endif %}
+                                        </strong>
+                                        <small class="text-muted ms-2">
+                                            <i class="fas fa-clock me-1"></i>
+                                            {{ reply.created_at|date:"d/m/Y à H:i" }}
+                                        </small>
+                                    </div>
+                                    {% if reply.priority == 'urgente' %}
+                                        <span class="badge bg-danger">Urgent</span>
+                                    {% elif reply.priority == 'haute' %}
+                                        <span class="badge bg-warning">Haute</span>
+                                    {% endif %}
+                                </div>
+                                <div class="message-content">
+                                    {{ reply.content|linebreaks }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Actions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm bg-light">
+                <div class="card-body text-center">
+                    <h6 class="text-ecobank mb-3">
+                        <i class="fas fa-tools me-2"></i>Actions disponibles
+                    </h6>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <a href="{% url 'reply_message' message.id %}" class="btn btn-ecobank w-100">
+                                <i class="fas fa-reply me-2"></i>Répondre
+                            </a>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <a href="{% url 'messages_list' %}" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-list me-2"></i>Tous les messages
+                            </a>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <a href="{% url 'send_message' %}" class="btn btn-outline-success w-100">
+                                <i class="fas fa-plus me-2"></i>Nouveau message
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.message-content {
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.message-content p {
+    margin-bottom: 1rem;
+}
+
+.message-content p:last-child {
+    margin-bottom: 0;
+}
+</style>
+{% endblock %}

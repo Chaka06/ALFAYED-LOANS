@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
 from decimal import Decimal
 import secrets
 import string
@@ -104,10 +105,10 @@ class LoanRequest(models.Model):
         max_digits=12, 
         decimal_places=2,
         validators=[
-            MinValueValidator(Decimal('5000000.00')),  # 5 millions
-            MaxValueValidator(Decimal('50000000.00'))  # 50 millions
+            MinValueValidator(Decimal('5000.00')),  # 5 000 EUR
+            MaxValueValidator(Decimal('5000000.00'))  # 5 000 000 EUR
         ],
-        verbose_name="Montant demandé (FCFA)"
+        verbose_name="Montant demandé (EUR)"
     )
     motif = models.TextField(verbose_name="Motif de la demande")
     document_projet = models.FileField(
@@ -144,7 +145,7 @@ class LoanRequest(models.Model):
     duree_remboursement_mois = models.IntegerField(
         default=84,
         verbose_name="Durée de remboursement (mois)"
-    )  # 7 ans max
+    )  # 12 mois à 300 mois (25 ans) max
     
     class Meta:
         verbose_name = "Demande de prêt"
@@ -174,7 +175,7 @@ class LoanRequest(models.Model):
         return None
     
     def __str__(self):
-        return f"Demande de {self.user.username} - {self.montant:,.0f} FCFA"
+        return f"Demande de {self.user.username} - {self.montant:,.0f} EUR"
 
 class Payment(models.Model):
     loan_request = models.OneToOneField(
@@ -203,3 +204,238 @@ class Payment(models.Model):
     
     def __str__(self):
         return f"Paiement pour {self.loan_request}"
+
+class Message(models.Model):
+    """Système de messagerie interne entre clients et gestionnaire"""
+    STATUS_CHOICES = [
+        ('non_lu', 'Non lu'),
+        ('lu', 'Lu'),
+        ('repondu', 'Répondu'),
+    ]
+    
+    PRIORITY_CHOICES = [
+        ('faible', 'Faible'),
+        ('normale', 'Normale'),
+        ('haute', 'Haute'),
+        ('urgente', 'Urgente'),
+    ]
+    
+    # Participants
+    sender = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='sent_messages',
+        verbose_name="Expéditeur"
+    )
+    recipient = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='received_messages',
+        verbose_name="Destinataire"
+    )
+    
+    # Contenu du message
+    subject = models.CharField(
+        max_length=200, 
+        verbose_name="Sujet"
+    )
+    content = models.TextField(
+        verbose_name="Contenu du message"
+    )
+    
+    # Métadonnées
+    status = models.CharField(
+        max_length=20, 
+        choices=STATUS_CHOICES, 
+        default='non_lu',
+        verbose_name="Statut"
+    )
+    priority = models.CharField(
+        max_length=20, 
+        choices=PRIORITY_CHOICES, 
+        default='normale',
+        verbose_name="Priorité"
+    )
+    
+    # Dates
+    created_at = models.DateTimeField(
+        auto_now_add=True, 
+        verbose_name="Date d'envoi"
+    )
+    read_at = models.DateTimeField(
+        blank=True, 
+        null=True, 
+        verbose_name="Date de lecture"
+    )
+    
+    # Réponse (si c'est une réponse à un message)
+    parent_message = models.ForeignKey(
+        'self', 
+        on_delete=models.CASCADE, 
+        blank=True, 
+        null=True,
+        related_name='replies',
+        verbose_name="Message parent"
+    )
+    
+    # Lien avec une demande de prêt (optionnel)
+    loan_request = models.ForeignKey(
+        LoanRequest, 
+        on_delete=models.SET_NULL, 
+        blank=True, 
+        null=True,
+        verbose_name="Demande de prêt liée"
+    )
+    
+    class Meta:
+        verbose_name = "Message"
+        verbose_name_plural = "Messages"
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"Message de {self.sender.username} à {self.recipient.username}: {self.subject}"
+    
+    def mark_as_read(self):
+        """Marquer le message comme lu"""
+        if self.status == 'non_lu':
+            self.status = 'lu'
+            self.read_at = timezone.now()
+            self.save()
+    
+    def mark_as_replied(self):
+        """Marquer le message comme répondu"""
+        self.status = 'repondu'
+        self.save()
+    
+    @property
+    def is_from_client(self):
+        """Vérifier si le message vient d'un client"""
+        return not self.sender.is_staff
+    
+    @property
+    def is_from_manager(self):
+        """Vérifier si le message vient du gestionnaire"""
+        return self.sender.is_staff
+    
+    @property
+    def time_since_created(self):
+        """Temps écoulé depuis la création"""
+        if not self.created_at:
+            return "Date inconnue"
+            
+        now = timezone.now()
+        delta = now - self.created_at
+        
+        if delta.days > 0:
+            return f"{delta.days} jour(s) ago"
+        elif delta.seconds > 3600:
+            hours = delta.seconds // 3600
+            return f"{hours} heure(s) ago"
+        elif delta.seconds > 60:
+            minutes = delta.seconds // 60
+            return f"{minutes} minute(s) ago"
+        else:
+            return "À l'instant"
+
+class Notification(models.Model):
+    """Système de notifications pour les utilisateurs"""
+    TYPE_CHOICES = [
+        ('info', 'Information'),
+        ('success', 'Succès'),
+        ('warning', 'Avertissement'),
+        ('error', 'Erreur'),
+        ('urgent', 'Urgent'),
+    ]
+    
+    STATUS_CHOICES = [
+        ('non_lu', 'Non lu'),
+        ('lu', 'Lu'),
+        ('archive', 'Archivé'),
+    ]
+    
+    # Contenu
+    title = models.CharField(max_length=200, verbose_name="Titre")
+    content = models.TextField(verbose_name="Contenu")
+    notification_type = models.CharField(
+        max_length=20, 
+        choices=TYPE_CHOICES, 
+        default='info',
+        verbose_name="Type"
+    )
+    
+    # Destinataire
+    recipient = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='notifications',
+        verbose_name="Destinataire"
+    )
+    
+    # Expéditeur (admin)
+    sender = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='sent_notifications',
+        verbose_name="Expéditeur"
+    )
+    
+    # Statut
+    status = models.CharField(
+        max_length=20, 
+        choices=STATUS_CHOICES, 
+        default='non_lu',
+        verbose_name="Statut"
+    )
+    
+    # Dates
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Date de création")
+    read_at = models.DateTimeField(blank=True, null=True, verbose_name="Date de lecture")
+    
+    # Lien optionnel
+    action_url = models.URLField(blank=True, null=True, verbose_name="Lien d'action")
+    action_text = models.CharField(max_length=100, blank=True, null=True, verbose_name="Texte du lien")
+    
+    class Meta:
+        verbose_name = "Notification"
+        verbose_name_plural = "Notifications"
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"Notification pour {self.recipient.username}: {self.title}"
+    
+    def mark_as_read(self):
+        """Marquer la notification comme lue"""
+        if self.status == 'non_lu':
+            self.status = 'lu'
+            self.read_at = timezone.now()
+            self.save()
+    
+    def archive(self):
+        """Archiver la notification"""
+        self.status = 'archive'
+        self.save()
+    
+    @property
+    def is_unread(self):
+        """Vérifier si la notification est non lue"""
+        return self.status == 'non_lu'
+    
+    @property
+    def time_since_created(self):
+        """Temps écoulé depuis la création"""
+        if not self.created_at:
+            return "Date inconnue"
+            
+        now = timezone.now()
+        delta = now - self.created_at
+        
+        if delta.days > 0:
+            return f"{delta.days} jour(s) ago"
+        elif delta.seconds > 3600:
+            hours = delta.seconds // 3600
+            return f"{hours} heure(s) ago"
+        elif delta.seconds > 60:
+            minutes = delta.seconds // 60
+            return f"{minutes} minute(s) ago"
+        else:
+            return "À l'instant"
