@@ -1,0 +1,29 @@
+Investor Banque - Votre demande de prêt est en attente
+
+Bonjour {{ profile.prenom|default:user.username }},
+
+Nous vous informons que votre demande de prêt INV-{{ loan_request.id|stringformat:"06d" }} est maintenant au statut "En attente" depuis le {{ status_date }}.
+
+Votre demande est en cours d'examen par notre équipe.
+
+DÉTAILS DE VOTRE DEMANDE
+========================
+Référence : INV-{{ loan_request.id|stringformat:"06d" }}
+Montant demandé : {{ loan_request.montant|floatformat:0 }} EUR
+Date de la demande : {{ loan_request.date_demande|date:"d/m/Y" }}
+Statut actuel : En attente d'examen
+
+PROCHAINES ÉTAPES
+=================
+- Notre équipe examine actuellement votre demande
+- Vous serez notifié dès qu'une décision sera prise
+- Le délai d'examen est généralement de 2 à 5 jours ouvrables
+
+Nous vous remercions pour votre patience et vous tiendrons informé de l'avancement de votre demande.
+
+---
+{{ bank_name }}
+Banque européenne - Votre partenaire financier de confiance
+
+Pour toute question : {{ manager_email }} ou {{ phone_support }}
+

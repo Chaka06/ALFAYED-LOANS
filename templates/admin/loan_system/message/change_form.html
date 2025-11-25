@@ -1,0 +1,239 @@
+{% extends "admin/change_form.html" %}
+{% load static %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+.reply-section {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.reply-form {
+    background: white;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #e9ecef;
+}
+
+.reply-header {
+    color: #28a745;
+    font-weight: bold;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.reply-header i {
+    margin-right: 8px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-control:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+.btn-reply {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn-reply:hover {
+    background: #218838;
+}
+
+.message-info {
+    background: #e3f2fd;
+    border-left: 4px solid #2196f3;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 0 4px 4px 0;
+}
+
+.message-info h4 {
+    margin: 0 0 10px 0;
+    color: #1976d2;
+}
+
+.message-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.message-detail {
+    background: white;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+}
+
+.message-detail strong {
+    color: #495057;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.message-content {
+    background: white;
+    padding: 15px;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+    white-space: pre-wrap;
+    font-family: inherit;
+    line-height: 1.5;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+{{ block.super }}
+
+{% if original %}
+<div class="reply-section">
+    <div class="reply-header">
+        <i class="fas fa-reply"></i>
+        Répondre à ce message
+    </div>
+    
+    <div class="message-info">
+        <h4><i class="fas fa-envelope me-2"></i>Message original</h4>
+        <div class="message-details">
+            <div class="message-detail">
+                <strong>De :</strong>
+                {% if original.is_from_manager %}
+                    <span style="color: #28a745; font-weight: bold;">👨‍💼 Gestionnaire</span>
+                {% else %}
+                    <span style="color: #007bff;">👤 {{ original.sender.username }}</span>
+                {% endif %}
+            </div>
+            <div class="message-detail">
+                <strong>À :</strong>
+                {% if original.recipient.is_staff %}
+                    <span style="color: #28a745; font-weight: bold;">👨‍💼 Gestionnaire</span>
+                {% else %}
+                    <span style="color: #007bff;">👤 {{ original.recipient.username }}</span>
+                {% endif %}
+            </div>
+            <div class="message-detail">
+                <strong>Sujet :</strong>
+                {{ original.subject }}
+            </div>
+            <div class="message-detail">
+                <strong>Date :</strong>
+                {{ original.created_at|date:"d/m/Y à H:i" }}
+            </div>
+        </div>
+        <div class="message-content">{{ original.content|linebreaks }}</div>
+    </div>
+    
+    <form method="post" action="{% url 'admin_reply_message' original.id %}" class="reply-form">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="id_subject">Sujet de la réponse :</label>
+            <input type="text" name="subject" id="id_subject" class="form-control" 
+                   value="Re: {{ original.subject }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="id_content">Votre réponse :</label>
+            <textarea name="content" id="id_content" class="form-control" rows="6" 
+                      placeholder="Tapez votre réponse ici..." required></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="id_priority">Priorité :</label>
+            <select name="priority" id="id_priority" class="form-control">
+                <option value="normale" selected>Normale</option>
+                <option value="haute">Haute</option>
+                <option value="urgente">Urgente</option>
+                <option value="faible">Faible</option>
+            </select>
+        </div>
+        
+        {% if original.loan_request %}
+        <div class="form-group">
+            <label for="id_loan_request">Demande de prêt liée :</label>
+            <select name="loan_request" id="id_loan_request" class="form-control">
+                <option value="{{ original.loan_request.id }}" selected>
+                    INV-{{ original.loan_request.id|stringformat:'06d' }} - {{ original.loan_request.montant|floatformat:0 }} EUR
+                </option>
+            </select>
+        </div>
+        {% endif %}
+        
+        <div style="text-align: right;">
+            <button type="submit" class="btn-reply">
+                <i class="fas fa-paper-plane me-1"></i>Envoyer la réponse
+            </button>
+        </div>
+    </form>
+</div>
+{% endif %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-focus sur le champ de contenu
+    const contentField = document.getElementById('id_content');
+    if (contentField) {
+        contentField.focus();
+    }
+    
+    // Ajouter une réponse pré-remplie si c'est un message de paiement
+    const originalContent = `{{ original.content|default:'' }}`;
+    if (originalContent.includes('paiement') || originalContent.includes('Paiement')) {
+        const replyContent = `Bonjour,
+
+Merci pour votre message concernant le paiement de votre prêt.
+
+Voici les modalités de paiement :
+- Montant de l'avance : {{ original.loan_request.montant_avance|floatformat:0 }} EUR
+- Clé de paiement : {{ original.loan_request.payment_key }}
+
+Vous pouvez effectuer le paiement par :
+1. Virement bancaire
+2. Mobile Money
+3. Espèces (dans nos agences)
+
+Veuillez me confirmer votre choix de mode de paiement.
+
+Cordialement,
+L'équipe Investor Banque`;
+        
+        if (contentField) {
+            contentField.value = replyContent;
+        }
+    }
+});
+</script>
+{% endblock %}

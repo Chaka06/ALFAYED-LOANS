@@ -1,0 +1,63 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Félicitations ! Votre prêt Investor Banque a été approuvé{% endblock %}
+{% block content %}
+<div class="greeting">
+    Bonjour {{ profile.prenom|default:user.username }},
+</div>
+
+<div class="message">
+    <p>🎉 <strong>Félicitations !</strong></p>
+    
+    <p>Nous avons le plaisir de vous informer que votre demande de prêt <strong>INV-{{ loan_request.id|stringformat:"06d" }}</strong> a été <strong>approuvée</strong> le {{ approval_date }}.</p>
+    
+    <p>Votre prêt est maintenant validé et vous pouvez procéder aux étapes suivantes.</p>
+</div>
+
+<div class="info-box">
+    <h3>✅ Prêt approuvé avec succès</h3>
+    <ul class="info-list">
+        <li>
+            <span class="info-label">Référence du prêt :</span>
+            <span class="info-value">INV-{{ loan_request.id|stringformat:"06d" }}</span>
+        </li>
+        <li>
+            <span class="info-label">Montant approuvé :</span>
+            <span class="info-value">{{ loan_request.montant|floatformat:0 }} EUR</span>
+        </li>
+        {% if loan_request.duree_remboursement_mois %}
+        <li>
+            <span class="info-label">Durée de remboursement :</span>
+            <span class="info-value">{{ loan_request.duree_remboursement_mois }} mois</span>
+        </li>
+        {% endif %}
+        <li>
+            <span class="info-label">Date d'approbation :</span>
+            <span class="info-value">{{ approval_date }}</span>
+        </li>
+        {% if loan_request.payment_key %}
+        <li>
+            <span class="info-label">Clé de paiement :</span>
+            <span class="info-value" style="font-family: monospace; font-weight: bold;">{{ loan_request.payment_key }}</span>
+        </li>
+        {% endif %}
+    </ul>
+</div>
+
+<div class="message">
+    <p><strong>🚀 Prochaines étapes :</strong></p>
+    <ul>
+        <li><strong>Paiement de l'avance :</strong> Vous recevrez bientôt les instructions de paiement</li>
+        <li><strong>Signature du contrat :</strong> Un contrat vous sera envoyé pour signature</li>
+        <li><strong>Déblocage des fonds :</strong> Après validation, les fonds seront transférés sur votre compte</li>
+        <li><strong>Suivi du remboursement :</strong> Vous pourrez suivre vos échéances dans votre espace client</li>
+    </ul>
+    
+    <p>Notre équipe vous contactera dans les plus brefs délais pour finaliser les modalités de votre prêt.</p>
+    
+    <p>Félicitations pour cette nouvelle étape dans vos projets ! 🎊</p>
+</div>
+
+<div class="cta-section">
+    <a href="mailto:{{ manager_email }}" class="cta-button">📧 Contacter notre équipe</a>
+</div>
+{% endblock %}

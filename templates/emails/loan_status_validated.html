@@ -1,0 +1,53 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Votre prêt a été validé - Investor Banque{% endblock %}
+{% block content %}
+<div class="greeting">
+    Bonjour {{ profile.prenom|default:user.username }},
+</div>
+
+<div class="message">
+    <p>Nous avons le plaisir de vous informer que votre demande de prêt <strong>INV-{{ loan_request.id|stringformat:"06d" }}</strong> a été <strong>validée</strong> le {{ status_date }}.</p>
+    
+    <p>Votre demande a été approuvée et vous pouvez maintenant procéder aux étapes suivantes.</p>
+</div>
+
+<div class="info-box">
+    <h3>📋 Détails de votre prêt validé</h3>
+    <ul class="info-list">
+        <li>
+            <span class="info-label">Référence :</span>
+            <span class="info-value">INV-{{ loan_request.id|stringformat:"06d" }}</span>
+        </li>
+        <li>
+            <span class="info-label">Montant validé :</span>
+            <span class="info-value">{{ loan_request.montant|floatformat:0 }} EUR</span>
+        </li>
+        <li>
+            <span class="info-label">Date de validation :</span>
+            <span class="info-value">{{ status_date }}</span>
+        </li>
+        {% if loan_request.payment_key %}
+        <li>
+            <span class="info-label">Clé de paiement :</span>
+            <span class="info-value" style="font-family: monospace; font-weight: bold;">{{ loan_request.payment_key }}</span>
+        </li>
+        {% endif %}
+    </ul>
+</div>
+
+<div class="message">
+    <p><strong>Prochaines étapes :</strong></p>
+    <ul>
+        <li>Effectuer le paiement de l'avance selon les instructions qui vous seront communiquées</li>
+        <li>Une fois le paiement validé, votre prêt sera activé</li>
+        <li>Les fonds seront débloqués sur votre compte</li>
+    </ul>
+    
+    <p>Notre équipe vous contactera dans les plus brefs délais pour finaliser les modalités.</p>
+</div>
+
+<div class="cta-section">
+    <a href="mailto:{{ manager_email }}" class="cta-button">📧 Contacter notre équipe</a>
+</div>
+{% endblock %}
+

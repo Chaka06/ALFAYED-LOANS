@@ -1,0 +1,29 @@
+Investor Banque - Votre prêt a été validé
+
+Bonjour {{ profile.prenom|default:user.username }},
+
+Nous avons le plaisir de vous informer que votre demande de prêt INV-{{ loan_request.id|stringformat:"06d" }} a été validée le {{ status_date }}.
+
+Votre demande a été approuvée et vous pouvez maintenant procéder aux étapes suivantes.
+
+DÉTAILS DE VOTRE PRÊT VALIDÉ
+=============================
+Référence : INV-{{ loan_request.id|stringformat:"06d" }}
+Montant validé : {{ loan_request.montant|floatformat:0 }} EUR
+Date de validation : {{ status_date }}
+{% if loan_request.payment_key %}Clé de paiement : {{ loan_request.payment_key }}{% endif %}
+
+PROCHAINES ÉTAPES
+=================
+- Effectuer le paiement de l'avance selon les instructions qui vous seront communiquées
+- Une fois le paiement validé, votre prêt sera activé
+- Les fonds seront débloqués sur votre compte
+
+Notre équipe vous contactera dans les plus brefs délais pour finaliser les modalités.
+
+---
+{{ bank_name }}
+Banque européenne - Votre partenaire financier de confiance
+
+Pour toute question : {{ manager_email }} ou {{ phone_support }}
+

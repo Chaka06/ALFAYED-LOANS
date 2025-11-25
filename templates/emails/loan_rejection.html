@@ -1,0 +1,47 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Décision concernant votre demande de prêt Investor Banque{% endblock %}
+{% block content %}
+<div class="greeting">
+    Bonjour {{ profile.prenom|default:user.username }},
+</div>
+
+<div class="message">
+    <p>Nous vous informons que votre demande de prêt <strong>INV-{{ loan_request.id|stringformat:"06d" }}</strong> a été examinée le {{ rejection_date }}.</p>
+    
+    <p>Après analyse approfondie de votre dossier, nous sommes au regret de vous informer que votre demande n'a pas pu être approuvée pour le moment.</p>
+</div>
+
+<div class="info-box">
+    <h3>📋 Détails de votre demande</h3>
+    <ul class="info-list">
+        <li>
+            <span class="info-label">Référence :</span>
+            <span class="info-value">INV-{{ loan_request.id|stringformat:"06d" }}</span>
+        </li>
+        <li>
+            <span class="info-label">Montant demandé :</span>
+            <span class="info-value">{{ loan_request.montant|floatformat:0 }} EUR</span>
+        </li>
+        <li>
+            <span class="info-label">Date de la demande :</span>
+            <span class="info-value">{{ loan_request.date_demande|date:"d/m/Y" }}</span>
+        </li>
+    </ul>
+</div>
+
+<div class="message">
+    <p><strong>Prochaines étapes possibles :</strong></p>
+    <ul>
+        <li>Vous pouvez soumettre une nouvelle demande après avoir amélioré votre profil</li>
+        <li>N'hésitez pas à nous contacter pour discuter de votre situation</li>
+        <li>Notre équipe est disponible pour vous conseiller sur les alternatives possibles</li>
+    </ul>
+    
+    <p>Nous restons à votre entière disposition pour répondre à vos questions et vous accompagner dans vos projets futurs.</p>
+</div>
+
+<div class="cta-section">
+    <a href="mailto:{{ manager_email }}" class="cta-button">📧 Contacter notre équipe</a>
+</div>
+{% endblock %}
+

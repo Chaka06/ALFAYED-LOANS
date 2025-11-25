@@ -1,0 +1,30 @@
+Investor Banque - Paiement confirmé
+
+Bonjour {{ profile.prenom|default:user.username }},
+
+Nous avons le plaisir de vous confirmer que le paiement pour votre prêt INV-{{ loan_request.id|stringformat:"06d" }} a été validé le {{ status_date }}.
+
+Votre prêt est maintenant au statut "Payé" et sera bientôt activé.
+
+PAIEMENT CONFIRMÉ
+=================
+Référence du prêt : INV-{{ loan_request.id|stringformat:"06d" }}
+Montant de l'avance : {{ loan_request.montant_avance|floatformat:0 }} EUR
+Date de validation : {{ status_date }}
+Montant total du prêt : {{ loan_request.montant|floatformat:0 }} EUR
+
+PROCHAINES ÉTAPES
+=================
+- Votre prêt sera activé sous peu
+- Les fonds seront débloqués sur votre compte dans les 24-48h
+- Vous recevrez un certificat de prêt par email
+- Les échéances de remboursement vous seront communiquées
+
+Merci pour votre confiance en Investor Banque !
+
+---
+{{ bank_name }}
+Banque européenne - Votre partenaire financier de confiance
+
+Pour toute question : {{ manager_email }} ou {{ phone_support }}
+

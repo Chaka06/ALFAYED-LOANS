@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation de votre demande de prêt Investor Banque</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .email-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #008751, #00a85a);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .content {
+            padding: 30px 20px;
+        }
+        .confirmation-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .confirmation-box h3 {
+            margin: 0 0 15px 0;
+            color: #155724;
+            font-size: 20px;
+        }
+        .loan-details {
+            background: #f8f9fa;
+            border-left: 4px solid #008751;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .loan-details h3 {
+            margin: 0 0 15px 0;
+            color: #008751;
+            font-size: 18px;
+        }
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .detail-item {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .detail-value {
+            font-size: 16px;
+            color: #008751;
+            font-weight: 600;
+        }
+        .next-steps {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .next-steps h3 {
+            margin: 0 0 15px 0;
+            color: #1976d2;
+            font-size: 18px;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+        }
+        .footer p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>📋 Investor Banque</h1>
+            <p>Confirmation de demande de prêt</p>
+        </div>
+        
+        <div class="content">
+            <div class="confirmation-box">
+                <h3>✅ Demande reçue avec succès</h3>
+                <p>Bonjour {{ profile.prenom|default:user.username }},</p>
+                <p>Nous avons bien reçu votre demande de prêt <strong>INV-{{ loan_request.id|stringformat:"06d" }}</strong> le {{ request_date }}.</p>
+            </div>
+            
+            <div class="loan-details">
+                <h3>📋 Détails de votre demande</h3>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Référence</div>
+                        <div class="detail-value">INV-{{ loan_request.id|stringformat:"06d" }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Montant demandé</div>
+                        <div class="detail-value">{{ loan_request.montant|floatformat:0 }} EUR</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Durée de remboursement</div>
+                        <div class="detail-value">{{ loan_request.duree_remboursement_mois }} mois</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Date de demande</div>
+                        <div class="detail-value">{{ request_date }}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="next-steps">
+                <h3>🔄 Prochaines étapes</h3>
+                <ol>
+                    <li><strong>Examen de votre dossier :</strong> Notre équipe examine votre demande</li>
+                    <li><strong>Validation :</strong> Vous recevrez une réponse sous 48h</li>
+                    <li><strong>Si approuvé :</strong> Instructions de paiement de l'avance</li>
+                    <li><strong>Déblocage :</strong> Transfert des fonds après validation</li>
+                </ol>
+            </div>
+            
+            <p>Vous pouvez suivre l'avancement de votre demande dans votre espace client.</p>
+            
+            <p>Merci pour votre confiance ! 🏦</p>
+        </div>
+        
+        <div class="footer">
+            <p><strong>{{ bank_name }}</strong></p>
+            <p>Votre partenaire financier de confiance</p>
+            <p>Pour toute question : {{ support_email }}</p>
+        </div>
+    </div>
+</body>
+</html>

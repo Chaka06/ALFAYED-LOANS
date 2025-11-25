@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}Demande de prêt - Investor Banque{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <div class="card shadow-lg border-0">
+                <div class="card-header card-header-ecobank text-center">
+                    <h3 class="mb-0 text-ecobank">
+                        <i class="fas fa-hand-holding-usd me-2"></i>Demande de prêt
+                    </h3>
+                    <p class="mb-0 mt-2">Remplissez le formulaire pour soumettre votre demande</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    <!-- Information sur les conditions -->
+                    <div class="alert alert-info mb-4">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-info-circle me-2"></i>Conditions du prêt
+                        </h6>
+                        <ul class="mb-0">
+                            <li><strong>Montant :</strong> Entre 5 000 et 5 000 000 EUR</li>
+                            <li><strong>Avance requise :</strong> 10% du montant demandé</li>
+                            <li><strong>Durée de remboursement :</strong> De 12 mois à 25 ans (300 mois maximum)</li>
+                            <li><strong>Validation :</strong> Sous réserve d'approbation par nos équipes</li>
+                        </ul>
+                    </div>
+                    
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- Montant du prêt -->
+                        <div class="mb-4">
+                            <label for="{{ form.montant.id_for_label }}" class="form-label">
+                                <i class="fas fa-coins me-2"></i>Montant du prêt <span class="text-danger">*</span>
+                            </label>
+                            {{ form.montant }}
+                            <div class="form-text">
+                                <i class="fas fa-calculator me-1"></i>
+                                Montant entre 5 000 et 5 000 000 EUR
+                            </div>
+                            {% if form.montant.errors %}
+                                <div class="text-danger small">{{ form.montant.errors }}</div>
+                            {% endif %}
+                            
+                            <!-- Calcul automatique de l'avance -->
+                            <div id="avance-info" class="mt-2 p-3 bg-light rounded" style="display: none;">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <strong>Montant demandé :</strong><br>
+                                        <span id="montant-display" class="text-ecobank">0 EUR</span>
+                                    </div>
+                                    <div class="col-6">
+                                        <strong>Avance à payer (10%) :</strong><br>
+                                        <span id="avance-display" class="text-success">0 EUR</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Motif de la demande -->
+                        <div class="mb-4">
+                            <label for="{{ form.motif.id_for_label }}" class="form-label">
+                                <i class="fas fa-clipboard-list me-2"></i>Motif de votre demande <span class="text-danger">*</span>
+                            </label>
+                            {{ form.motif }}
+                            <div class="form-text">
+                                Décrivez clairement l'objet de votre demande de prêt et comment vous comptez utiliser les fonds.
+                            </div>
+                            {% if form.motif.errors %}
+                                <div class="text-danger small">{{ form.motif.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Document du projet -->
+                        <div class="mb-4">
+                            <label for="{{ form.document_projet.id_for_label }}" class="form-label">
+                                <i class="fas fa-file-upload me-2"></i>Document détaillant votre projet <span class="text-danger">*</span>
+                            </label>
+                            {{ form.document_projet }}
+                            <div class="form-text">
+                                <i class="fas fa-file-pdf me-1"></i>
+                                Joignez un document détaillé de votre projet (PDF, DOC, DOCX acceptés)
+                            </div>
+                            {% if form.document_projet.errors %}
+                                <div class="text-danger small">{{ form.document_projet.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Avertissement important -->
+                        <div class="alert alert-warning">
+                            <h6 class="alert-heading">
+                                <i class="fas fa-exclamation-triangle me-2"></i>Important à retenir
+                            </h6>
+                            <ul class="mb-0">
+                                <li>Votre demande sera étudiée par nos équipes</li>
+                                <li>Une fois validée, vous devrez payer 10% d'avance pour débloquer le prêt</li>
+                                <li>Le paiement se fait auprès de votre gestionnaire de compte</li>
+                                <li>Une clé de paiement vous sera fournie après validation</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-ecobank btn-lg">
+                                <i class="fas fa-paper-plane me-2"></i>Soumettre ma demande
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="text-center">
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Retour au tableau de bord
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const montantInput = document.getElementById('{{ form.montant.id_for_label }}');
+    const avanceInfo = document.getElementById('avance-info');
+    const montantDisplay = document.getElementById('montant-display');
+    const avanceDisplay = document.getElementById('avance-display');
+    
+    function updateAvance() {
+        const montant = parseFloat(montantInput.value) || 0;
+        
+        if (montant > 0) {
+            const avance = montant * 0.10;
+            
+            // Formatter les nombres avec des espaces pour les milliers
+            const montantFormatted = new Intl.NumberFormat('fr-FR').format(montant);
+            const avanceFormatted = new Intl.NumberFormat('fr-FR').format(avance);
+            
+            montantDisplay.textContent = montantFormatted + ' EUR';
+            avanceDisplay.textContent = avanceFormatted + ' EUR';
+            
+            avanceInfo.style.display = 'block';
+        } else {
+            avanceInfo.style.display = 'none';
+        }
+    }
+    
+    montantInput.addEventListener('input', updateAvance);
+    
+    // Calculer à l'initialisation si une valeur est déjà présente
+    updateAvance();
+});
+</script>
+{% endblock %}

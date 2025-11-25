@@ -1,0 +1,56 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Votre prêt est maintenant actif - Investor Banque{% endblock %}
+{% block content %}
+<div class="greeting">
+    Bonjour {{ profile.prenom|default:user.username }},
+</div>
+
+<div class="message">
+    <p>🎉 <strong>Excellente nouvelle !</strong></p>
+    
+    <p>Votre prêt <strong>INV-{{ loan_request.id|stringformat:"06d" }}</strong> est maintenant <strong>ACTIF</strong> depuis le {{ status_date }}.</p>
+    
+    <p>Les fonds ont été débloqués et sont disponibles sur votre compte.</p>
+</div>
+
+<div class="info-box">
+    <h3>🎊 Prêt activé avec succès</h3>
+    <ul class="info-list">
+        <li>
+            <span class="info-label">Référence du prêt :</span>
+            <span class="info-value">INV-{{ loan_request.id|stringformat:"06d" }}</span>
+        </li>
+        <li>
+            <span class="info-label">Montant du prêt :</span>
+            <span class="info-value">{{ loan_request.montant|floatformat:0 }} EUR</span>
+        </li>
+        <li>
+            <span class="info-label">Date d'activation :</span>
+            <span class="info-value">{{ status_date }}</span>
+        </li>
+        {% if loan_request.duree_remboursement_mois %}
+        <li>
+            <span class="info-label">Durée de remboursement :</span>
+            <span class="info-value">{{ loan_request.duree_remboursement_mois }} mois</span>
+        </li>
+        {% endif %}
+    </ul>
+</div>
+
+<div class="message">
+    <p><strong>Informations importantes :</strong></p>
+    <ul>
+        <li>✅ Les fonds sont maintenant disponibles sur votre compte</li>
+        <li>📄 Vous recevrez un certificat de prêt par email</li>
+        <li>📅 Les échéances de remboursement vous seront communiquées</li>
+        <li>💼 Vous pouvez suivre votre prêt dans votre espace client</li>
+    </ul>
+    
+    <p>Félicitations pour cette nouvelle étape dans vos projets ! Nous sommes heureux de vous accompagner.</p>
+</div>
+
+<div class="cta-section">
+    <a href="mailto:{{ manager_email }}" class="cta-button">📧 Contacter notre équipe</a>
+</div>
+{% endblock %}
+

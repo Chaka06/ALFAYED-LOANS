@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Votre compte Investor Banque est maintenant actif</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .email-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .content {
+            padding: 30px 20px;
+        }
+        .activation-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .activation-box h3 {
+            margin: 0 0 15px 0;
+            color: #155724;
+            font-size: 20px;
+        }
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #28a745;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .info-box h3 {
+            margin: 0 0 15px 0;
+            color: #28a745;
+            font-size: 18px;
+        }
+        .services-list {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .services-list h3 {
+            margin: 0 0 15px 0;
+            color: #1976d2;
+            font-size: 18px;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .cta-button:hover {
+            background: linear-gradient(135deg, #218838, #1ea085);
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+        }
+        .footer p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>🎉 FÉLICITATIONS !</h1>
+            <p>Votre compte Investor Banque est maintenant actif</p>
+        </div>
+        
+        <div class="content">
+            <div class="activation-box">
+                <h3>✅ Compte activé avec succès</h3>
+                <p>Bonjour {{ profile.prenom|default:user.username }},</p>
+                <p>Votre compte Investor Banque a été activé le <strong>{{ activation_date }}</strong>.</p>
+                <p>Vous pouvez maintenant accéder à tous nos services !</p>
+            </div>
+            
+            <div class="info-box">
+                <h3>📋 Informations de votre compte</h3>
+                <ul>
+                    <li><strong>Nom complet :</strong> {{ profile.prenom|default:"" }} {{ profile.nom|default:"" }}</li>
+                    <li><strong>Email :</strong> {{ user.email }}</li>
+                    <li><strong>Date d'activation :</strong> {{ activation_date }}</li>
+                    <li><strong>Statut :</strong> <span style="color: #28a745; font-weight: 600;">✅ Compte actif</span></li>
+                </ul>
+            </div>
+            
+            <div class="services-list">
+                <h3>🚀 Services maintenant disponibles</h3>
+                <ul>
+                    <li>✅ Demander un prêt personnel ou professionnel</li>
+                    <li>✅ Suivre vos demandes en temps réel</li>
+                    <li>✅ Communiquer avec notre équipe via la messagerie interne</li>
+                    <li>✅ Télécharger vos documents et certificats</li>
+                    <li>✅ Gérer votre profil et vos informations</li>
+                    <li>✅ Recevoir des notifications importantes</li>
+                </ul>
+            </div>
+            
+            <p style="text-align: center; margin: 30px 0;">
+                <a href="http://localhost:9000/dashboard/" class="cta-button">
+                    🚀 Accéder à mon tableau de bord
+                </a>
+            </p>
+            
+            <p>Bienvenue dans la famille Investor Banque ! Nous sommes ravis de vous accompagner dans vos projets financiers.</p>
+        </div>
+        
+        <div class="footer">
+            <p><strong>{{ bank_name }}</strong></p>
+            <p>Votre partenaire financier de confiance en Côte d'Ivoire</p>
+            <p>Pour toute question : {{ support_email }}</p>
+        </div>
+    </div>
+</body>
+</html>

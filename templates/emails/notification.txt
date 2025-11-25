@@ -1,0 +1,14 @@
+Notification - {{ title }}
+
+Bonjour {{ user.userprofile.prenom|default:user.username }},
+
+{{ content }}
+
+{% if action_url and action_text %}
+Action: {{ action_text }}
+Lien: {{ action_url }}
+{% endif %}
+
+Date: {{ created_at }}
+Banque: {{ bank_name }}
+

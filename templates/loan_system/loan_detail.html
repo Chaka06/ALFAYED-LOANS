@@ -1,0 +1,503 @@
+{% extends 'base.html' %}
+
+{% block title %}Détails du prêt INV-{{ loan.id|stringformat:"06d" }} - Investor Banque{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- En-tête -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="text-ecobank mb-1">
+                        <i class="fas fa-file-invoice-dollar me-2"></i>Prêt INV-{{ loan.id|stringformat:"06d" }}
+                    </h2>
+                    <p class="text-muted mb-0">Détails de votre demande de prêt</p>
+                </div>
+                
+                <div>
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary me-2">
+                        <i class="fas fa-arrow-left me-1"></i>Retour
+                    </a>
+                    
+                    {% if loan.status == 'paye' %}
+                        <a href="{% url 'download_certificate' loan.id %}" class="btn btn-success">
+                            <i class="fas fa-download me-1"></i>Télécharger l'attestation
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Statut principal -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center py-4">
+                    {% if loan.status == 'en_attente' %}
+                        <i class="fas fa-clock text-warning" style="font-size: 3rem;"></i>
+                        <h4 class="mt-3 text-warning">Demande en cours d'étude</h4>
+                        <p class="text-muted mb-0">Votre demande est en cours d'analyse par nos équipes.</p>
+                    {% elif loan.status == 'valide' %}
+                        <i class="fas fa-check-circle text-info" style="font-size: 3rem;"></i>
+                        <h4 class="mt-3 text-info">Demande validée</h4>
+                        <p class="text-muted mb-3">Votre demande a été approuvée ! Vous pouvez maintenant procéder au paiement.</p>
+                        
+                        {% if loan.payment_key %}
+                            <div class="alert alert-info d-inline-block">
+                                <strong>Clé de paiement :</strong> 
+                                <span class="badge bg-primary fs-6 ms-2">{{ loan.payment_key }}</span>
+                                <br><small>Présentez cette clé à votre gestionnaire de compte pour valider le paiement</small>
+                            </div>
+                        {% endif %}
+                    {% elif loan.status == 'paye' %}
+                        <i class="fas fa-medal text-success" style="font-size: 3rem;"></i>
+                        <h4 class="mt-3 text-success">Prêt accordé et activé</h4>
+                        <p class="text-muted mb-0">Félicitations ! Votre prêt a été débloqué.</p>
+                    {% elif loan.status == 'rejete' %}
+                        <i class="fas fa-times-circle text-danger" style="font-size: 3rem;"></i>
+                        <h4 class="mt-3 text-danger">Demande rejetée</h4>
+                        <p class="text-muted mb-0">Votre demande n'a pas pu être approuvée.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Détails du prêt -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header card-header-ecobank">
+                    <h6 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Informations du prêt
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Référence :</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            INV-{{ loan.id|stringformat:"06d" }}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Montant demandé :</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <span class="text-ecobank fs-5 fw-bold">{{ loan.montant|floatformat:0 }} EUR</span>
+                        </div>
+                    </div>
+                    
+                    {% if loan.status != 'en_attente' and loan.status != 'rejete' %}
+                        <div class="row mb-3">
+                            <div class="col-sm-4">
+                                <strong>Avance (10%) :</strong>
+                            </div>
+                            <div class="col-sm-8">
+                                <span class="text-success fs-6 fw-bold">{{ loan.montant_avance|floatformat:0 }} EUR</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Date de demande :</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            {{ loan.date_demande|date:"d/m/Y à H:i" }}
+                        </div>
+                    </div>
+                    
+                    {% if loan.date_validation %}
+                        <div class="row mb-3">
+                            <div class="col-sm-4">
+                                <strong>Date de validation :</strong>
+                            </div>
+                            <div class="col-sm-8">
+                                {{ loan.date_validation|date:"d/m/Y à H:i" }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    {% if loan.date_paiement %}
+                        <div class="row mb-3">
+                            <div class="col-sm-4">
+                                <strong>Date de paiement :</strong>
+                            </div>
+                            <div class="col-sm-8">
+                                {{ loan.date_paiement|date:"d/m/Y à H:i" }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Durée de remboursement :</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            {{ loan.duree_remboursement_mois }} mois 
+                            {% if loan.duree_remboursement_mois == 84 %}
+                                (7 ans)
+                            {% elif loan.duree_remboursement_mois == 72 %}
+                                (6 ans)
+                            {% elif loan.duree_remboursement_mois == 60 %}
+                                (5 ans)
+                            {% elif loan.duree_remboursement_mois == 48 %}
+                                (4 ans)
+                            {% elif loan.duree_remboursement_mois == 36 %}
+                                (3 ans)
+                            {% elif loan.duree_remboursement_mois == 24 %}
+                                (2 ans)
+                            {% elif loan.duree_remboursement_mois == 12 %}
+                                (1 an)
+                            {% else %}
+                                ({{ loan.duree_remboursement_mois|floatformat:1 }} ans environ)
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if loan.date_fin_remboursement %}
+                        <div class="row mb-3">
+                            <div class="col-sm-4">
+                                <strong>Date limite de remboursement :</strong>
+                            </div>
+                            <div class="col-sm-8">
+                                <span class="text-warning">{{ loan.date_fin_remboursement|date:"d/m/Y" }}</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <strong>Motif :</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            {{ loan.motif|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <!-- Chronologie -->
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header card-header-ecobank">
+                    <h6 class="mb-0">
+                        <i class="fas fa-history me-2"></i>Chronologie
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        <!-- Demande soumise -->
+                        <div class="timeline-item completed">
+                            <div class="timeline-marker bg-success">
+                                <i class="fas fa-check text-white"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h6 class="mb-1">Demande soumise</h6>
+                                <small class="text-muted">{{ loan.date_demande|date:"d/m/Y à H:i" }}</small>
+                            </div>
+                        </div>
+                        
+                        <!-- Validation -->
+                        <div class="timeline-item {% if loan.date_validation %}completed{% elif loan.status == 'rejete' %}rejected{% else %}pending{% endif %}">
+                            <div class="timeline-marker {% if loan.date_validation %}bg-success{% elif loan.status == 'rejete' %}bg-danger{% else %}bg-warning{% endif %}">
+                                {% if loan.date_validation %}
+                                    <i class="fas fa-check text-white"></i>
+                                {% elif loan.status == 'rejete' %}
+                                    <i class="fas fa-times text-white"></i>
+                                {% else %}
+                                    <i class="fas fa-clock text-white"></i>
+                                {% endif %}
+                            </div>
+                            <div class="timeline-content">
+                                {% if loan.status == 'rejete' %}
+                                    <h6 class="mb-1 text-danger">Demande rejetée</h6>
+                                {% elif loan.date_validation %}
+                                    <h6 class="mb-1">Demande validée</h6>
+                                    <small class="text-muted">{{ loan.date_validation|date:"d/m/Y à H:i" }}</small>
+                                {% else %}
+                                    <h6 class="mb-1">En cours d'étude</h6>
+                                    <small class="text-muted">En attente</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Paiement -->
+                        {% if loan.status != 'rejete' %}
+                            <div class="timeline-item {% if loan.date_paiement %}completed{% else %}pending{% endif %}">
+                                <div class="timeline-marker {% if loan.date_paiement %}bg-success{% else %}bg-secondary{% endif %}">
+                                    {% if loan.date_paiement %}
+                                        <i class="fas fa-check text-white"></i>
+                                    {% else %}
+                                        <i class="fas fa-credit-card text-white"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="timeline-content">
+                                    {% if loan.date_paiement %}
+                                        <h6 class="mb-1">Paiement validé</h6>
+                                        <small class="text-muted">{{ loan.date_paiement|date:"d/m/Y à H:i" }}</small>
+                                    {% else %}
+                                        <h6 class="mb-1">Paiement en attente</h6>
+                                        <small class="text-muted">10% d'avance requis</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Prêt actif -->
+                            <div class="timeline-item {% if loan.status == 'paye' %}completed{% else %}pending{% endif %}">
+                                <div class="timeline-marker {% if loan.status == 'paye' %}bg-success{% else %}bg-secondary{% endif %}">
+                                    {% if loan.status == 'paye' %}
+                                        <i class="fas fa-medal text-white"></i>
+                                    {% else %}
+                                        <i class="fas fa-handshake text-white"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="timeline-content">
+                                    {% if loan.status == 'paye' %}
+                                        <h6 class="mb-1">Prêt accordé</h6>
+                                        <small class="text-muted">Prêt actif</small>
+                                    {% else %}
+                                        <h6 class="mb-1">Prêt en attente</h6>
+                                        <small class="text-muted">Après paiement</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Instructions selon le statut -->
+    {% if loan.status == 'valide' and loan.payment_key %}
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <h5 class="alert-heading">
+                        <i class="fas fa-info-circle me-2"></i>Prochaines étapes
+                    </h5>
+                    <p class="mb-3">Votre demande a été approuvée ! Pour débloquer votre prêt :</p>
+                    <ol class="mb-3">
+                        <li>Contactez votre gestionnaire de compte Investor Banque</li>
+                        <li>Effectuez le paiement de l'avance : <strong>{{ loan.montant_avance|floatformat:0 }} EUR</strong></li>
+                        <li>Présentez votre clé de paiement : <strong class="text-primary">{{ loan.payment_key }}</strong></li>
+                        <li>Le gestionnaire validera le paiement avec cette clé</li>
+                        <li>Votre prêt sera immédiatement débloqué</li>
+                    </ol>
+                    
+                    <!-- Contact du gestionnaire -->
+                    <div class="card bg-light mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title text-ecobank">
+                                <i class="fas fa-user-tie me-2"></i>Contactez votre gestionnaire
+                            </h6>
+                            <p class="card-text mb-3">
+                                <strong>Numéro :</strong> +49 157 50098219
+                            </p>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="https://wa.me/4915750098219?text=Bonjour,%20je%20souhaite%20effectuer%20le%20paiement%20pour%20mon%20prêt%20INV-{{ loan.id|stringformat:'06d' }}.%20Ma%20clé%20de%20paiement%20est%20:%20{{ loan.payment_key }}" 
+                                   target="_blank" class="btn btn-success btn-sm">
+                                    <i class="fab fa-whatsapp me-1"></i>WhatsApp
+                                </a>
+                                <a href="tel:+4915750098219" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-phone me-1"></i>Appeler
+                                </a>
+                                <a href="sms:+4915750098219?body=Bonjour, je souhaite effectuer le paiement pour mon prêt INV-{{ loan.id|stringformat:'06d' }}. Ma clé de paiement est : {{ loan.payment_key }}" 
+                                   class="btn btn-info btn-sm">
+                                    <i class="fas fa-sms me-1"></i>SMS
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-start align-items-center">
+                        <p class="mb-0 me-3">
+                            <i class="fas fa-exclamation-triangle text-warning me-1"></i>
+                            <strong>Important :</strong> Conservez précieusement votre clé de paiement !
+                        </p>
+                        <button class="btn btn-sm btn-outline-primary" onclick="copyToClipboard('{{ loan.payment_key }}')">
+                            <i class="fas fa-copy me-1"></i>Copier la clé
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% elif loan.status == 'paye' %}
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-success">
+                    <h5 class="alert-heading">
+                        <i class="fas fa-check-circle me-2"></i>Félicitations !
+                    </h5>
+                    <p class="mb-3">Votre prêt de <strong>{{ loan.montant|floatformat:0 }} EUR</strong> a été débloqué avec succès.</p>
+                    <ul class="mb-3">
+                        <li>Vous pouvez télécharger votre attestation de prêt officielle</li>
+                        <li>Le remboursement se fait auprès de votre gestionnaire de compte</li>
+                        <li>Durée maximale : {{ loan.duree_remboursement_mois }} mois</li>
+                        {% if loan.date_fin_remboursement %}
+                            <li>Date limite : {{ loan.date_fin_remboursement|date:"d/m/Y" }}</li>
+                        {% endif %}
+                    </ul>
+                    
+                    <!-- Contact pour remboursement -->
+                    <div class="card bg-light mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title text-ecobank">
+                                <i class="fas fa-user-tie me-2"></i>Pour vos remboursements
+                            </h6>
+                            <p class="card-text mb-3">
+                                Contactez votre gestionnaire : <strong>+49 157 50098219</strong>
+                            </p>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="https://wa.me/4915750098219?text=Bonjour,%20je%20souhaite%20effectuer%20un%20remboursement%20pour%20mon%20prêt%20INV-{{ loan.id|stringformat:'06d' }}." 
+                                   target="_blank" class="btn btn-success btn-sm">
+                                    <i class="fab fa-whatsapp me-1"></i>WhatsApp
+                                </a>
+                                <a href="tel:+4915750098219" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-phone me-1"></i>Appeler
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="{% url 'download_certificate' loan.id %}" class="btn btn-success">
+                        <i class="fas fa-download me-2"></i>Télécharger l'attestation
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% elif loan.status == 'en_attente' %}
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-warning">
+                    <h5 class="alert-heading">
+                        <i class="fas fa-clock me-2"></i>Demande en cours d'étude
+                    </h5>
+                    <p class="mb-3">
+                        Votre demande de prêt est actuellement étudiée par nos équipes. 
+                        Vous recevrez une notification dès qu'une décision sera prise.
+                    </p>
+                    
+                    <!-- Contact pour information -->
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h6 class="card-title text-ecobank">
+                                <i class="fas fa-question-circle me-2"></i>Des questions ?
+                            </h6>
+                            <p class="card-text mb-3">
+                                Contactez votre gestionnaire : <strong>+49 157 50098219</strong>
+                            </p>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="https://wa.me/4915750098219?text=Bonjour,%20j'aimerais%20avoir%20des%20informations%20sur%20l'état%20de%20ma%20demande%20de%20prêt%20INV-{{ loan.id|stringformat:'06d' }}." 
+                                   target="_blank" class="btn btn-success btn-sm">
+                                    <i class="fab fa-whatsapp me-1"></i>WhatsApp
+                                </a>
+                                <a href="tel:+4915750098219" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-phone me-1"></i>Appeler
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% elif loan.status == 'rejete' %}
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-danger">
+                    <h5 class="alert-heading">
+                        <i class="fas fa-times-circle me-2"></i>Demande rejetée
+                    </h5>
+                    <p class="mb-3">
+                        Malheureusement, votre demande de prêt n'a pas pu être approuvée.
+                    </p>
+                    
+                    <!-- Contact pour explications -->
+                    <div class="card bg-light mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title text-ecobank">
+                                <i class="fas fa-info-circle me-2"></i>Pour plus d'informations
+                            </h6>
+                            <p class="card-text mb-3">
+                                Contactez votre gestionnaire : <strong>+49 157 50098219</strong>
+                            </p>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="https://wa.me/4915750098219?text=Bonjour,%20ma%20demande%20de%20prêt%20INV-{{ loan.id|stringformat:'06d' }}%20a%20été%20rejetée.%20Pouvez-vous%20m'expliquer%20les%20raisons%20?" 
+                                   target="_blank" class="btn btn-success btn-sm">
+                                    <i class="fab fa-whatsapp me-1"></i>WhatsApp
+                                </a>
+                                <a href="tel:+4915750098219" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-phone me-1"></i>Appeler
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="{% url 'dashboard' %}" class="btn btn-primary">
+                        <i class="fas fa-arrow-left me-2"></i>Retour au tableau de bord
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function copyToClipboard(text) {
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(function() {
+            showToast('Clé copiée dans le presse-papiers !', 'success');
+        }).catch(function(err) {
+            console.error('Erreur lors de la copie: ', err);
+            showToast('Erreur lors de la copie', 'error');
+        });
+    } else {
+        // Fallback pour les navigateurs plus anciens
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            showToast('Clé copiée dans le presse-papiers !', 'success');
+        } catch (err) {
+            console.error('Erreur lors de la copie: ', err);
+            showToast('Erreur lors de la copie', 'error');
+        }
+        document.body.removeChild(textArea);
+    }
+}
+
+function showToast(message, type) {
+    const toast = document.createElement('div');
+    toast.className = 'position-fixed top-0 end-0 p-3';
+    toast.style.zIndex = '9999';
+    
+    const bgClass = type === 'success' ? 'bg-success' : 'bg-danger';
+    const icon = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle';
+    
+    toast.innerHTML = `
+        <div class="toast show ${bgClass} text-white" role="alert">
+            <div class="toast-body">
+                <i class="${icon} me-2"></i>${message}
+            </div>
+        </div>
+    `;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Paiement confirmé - Investor Banque{% endblock %}
+{% block content %}
+<div class="greeting">
+    Bonjour {{ profile.prenom|default:user.username }},
+</div>
+
+<div class="message">
+    <p>Nous avons le plaisir de vous confirmer que votre paiement pour le prêt <strong>INV-{{ loan_request.id|stringformat:"06d" }}</strong> a été validé avec succès le {{ payment_date }}.</p>
+    
+    <p>Votre prêt est maintenant <strong>actif</strong> et les fonds seront débloqués dans les plus brefs délais.</p>
+</div>
+
+<div class="info-box">
+    <h3>✅ Paiement confirmé</h3>
+    <ul class="info-list">
+        <li>
+            <span class="info-label">Référence du prêt :</span>
+            <span class="info-value">INV-{{ loan_request.id|stringformat:"06d" }}</span>
+        </li>
+        <li>
+            <span class="info-label">Montant de l'avance :</span>
+            <span class="info-value">{{ loan_request.montant_avance|floatformat:0 }} EUR</span>
+        </li>
+        <li>
+            <span class="info-label">Date de validation :</span>
+            <span class="info-value">{{ payment_date }}</span>
+        </li>
+        <li>
+            <span class="info-label">Montant total du prêt :</span>
+            <span class="info-value">{{ loan_request.montant|floatformat:0 }} EUR</span>
+        </li>
+    </ul>
+</div>
+
+<div class="message">
+    <p><strong>Prochaines étapes :</strong></p>
+    <ul>
+        <li>Les fonds seront débloqués sur votre compte sous 24-48h</li>
+        <li>Vous recevrez un certificat de prêt par email</li>
+        <li>Vous pouvez suivre l'état de votre prêt dans votre espace client</li>
+        <li>Les échéances de remboursement vous seront communiquées prochainement</li>
+    </ul>
+    
+    <p>Merci pour votre confiance en Investor Banque !</p>
+</div>
+
+<div class="cta-section">
+    <a href="http://localhost:9000/loan/{{ loan_request.id }}/" class="cta-button">📄 Voir les détails de mon prêt</a>
+</div>
+{% endblock %}
+

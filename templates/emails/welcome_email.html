@@ -1,0 +1,73 @@
+{% extends 'emails/base_email.html' %}
+
+{% block title %}Bienvenue chez Investor Banque{% endblock %}
+
+{% block content %}
+<div class="greeting">
+    Bienvenue {{ profile.prenom|default:user.username }} ! 🎉
+</div>
+
+<div class="message">
+    <p>Félicitations ! Votre compte Investor Banque a été créé avec succès le <strong>{{ date_inscription }}</strong>.</p>
+    <p>Nous sommes ravis de vous accueillir dans la famille Investor Banque, votre partenaire financier de confiance depuis 1985.</p>
+</div>
+
+<div class="success-box">
+    <h3>✅ Compte créé avec succès</h3>
+    <p>Votre compte Investor Banque est maintenant opérationnel et prêt à vous accompagner dans tous vos projets financiers.</p>
+</div>
+
+<div class="info-box">
+    <h3>📋 Informations de votre compte</h3>
+    <ul class="info-list">
+        <li>
+            <span class="info-label">Nom complet :</span>
+            <span class="info-value">{{ profile.prenom|default:"" }} {{ profile.nom|default:"" }}</span>
+        </li>
+        <li>
+            <span class="info-label">Email :</span>
+            <span class="info-value">{{ user.email }}</span>
+        </li>
+        <li>
+            <span class="info-label">Date d'inscription :</span>
+            <span class="info-value">{{ date_inscription }}</span>
+        </li>
+        <li>
+            <span class="info-label">Statut :</span>
+            <span class="info-value" style="color: #28a745;">✅ Compte actif</span>
+        </li>
+    </ul>
+</div>
+
+<div class="info-box">
+    <h3>🚀 Services disponibles</h3>
+    <p>Vous pouvez maintenant accéder à tous nos services de prêts en ligne :</p>
+    <ul style="margin-top: 15px;">
+        <li>✅ <strong>Demander un prêt</strong> personnel ou professionnel</li>
+        <li>✅ <strong>Suivre vos demandes</strong> en temps réel</li>
+        <li>✅ <strong>Communiquer</strong> avec notre équipe via la messagerie interne</li>
+        <li>✅ <strong>Télécharger</strong> vos documents et certificats</li>
+        <li>✅ <strong>Gérer votre profil</strong> et vos informations</li>
+    </ul>
+</div>
+
+<div class="cta-section">
+    <a href="http://localhost:9000/dashboard/" class="cta-button">
+        🚀 Accéder à mon tableau de bord
+    </a>
+</div>
+
+<div class="alert-box">
+    <h3>🔒 Sécurité de votre compte</h3>
+    <p>Pour votre sécurité, nous vous recommandons de :</p>
+    <ul style="margin-top: 10px;">
+        <li>Changer votre mot de passe régulièrement</li>
+        <li>Ne jamais partager vos identifiants</li>
+        <li>Nous contacter immédiatement en cas d'activité suspecte</li>
+    </ul>
+</div>
+
+<div class="message">
+    <p><strong>Bienvenue dans la famille Investor Banque !</strong> Nous sommes là pour vous accompagner dans la réalisation de tous vos projets financiers.</p>
+</div>
+{% endblock %}

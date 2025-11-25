@@ -1,0 +1,67 @@
+{% extends 'emails/base_email.html' %}
+
+{% block title %}Instructions de paiement - Investor Banque{% endblock %}
+
+{% block content %}
+<div class="greeting">
+    Instructions de paiement - Prêt INV-{{ loan_request.id|stringformat:"06d" }}
+</div>
+
+<div class="message">
+    <p>Bonjour {{ profile.prenom|default:user.username }},</p>
+    <p>Votre prêt a été approuvé ! Voici les instructions pour effectuer le paiement de l'avance.</p>
+</div>
+
+<div class="success-box">
+    <h3>💰 Paiement de l'avance</h3>
+    <p>Votre prêt INV-{{ loan_request.id|stringformat:"06d" }} nécessite le paiement d'une avance avant le déblocage des fonds.</p>
+</div>
+
+<div class="info-box">
+    <h3>📋 Détails du paiement</h3>
+    <ul class="info-list">
+        <li>
+            <span class="info-label">Clé de paiement :</span>
+            <span class="info-value" style="color: #dc3545; font-weight: bold; font-size: 18px;">{{ payment.payment_key }}</span>
+        </li>
+        <li>
+            <span class="info-label">Montant de l'avance :</span>
+            <span class="info-value">{{ payment.montant|floatformat:0 }} EUR</span>
+        </li>
+        <li>
+            <span class="info-label">Date limite :</span>
+            <span class="info-value">{{ payment_date }}</span>
+        </li>
+        <li>
+            <span class="info-label">Référence :</span>
+            <span class="info-value">INV-{{ loan_request.id|stringformat:"06d" }}</span>
+        </li>
+    </ul>
+</div>
+
+<div class="alert-box">
+    <h3>⚠️ Instructions importantes</h3>
+    <ul style="margin-top: 10px;">
+        <li><strong>Conservez précieusement</strong> votre clé de paiement</li>
+        <li><strong>Effectuez le paiement</strong> dans les délais impartis</li>
+        <li><strong>Contactez-nous</strong> si vous avez des questions</li>
+        <li><strong>Ne partagez jamais</strong> votre clé de paiement</li>
+    </ul>
+</div>
+
+<div class="message">
+    <p><strong>Prochaines étapes :</strong></p>
+    <ol>
+        <li>Effectuez le paiement avec votre clé</li>
+        <li>Envoyez-nous la preuve de paiement</li>
+        <li>Nous validerons votre paiement</li>
+        <li>Les fonds seront débloqués sur votre compte</li>
+    </ol>
+</div>
+
+<div class="cta-section">
+    <a href="http://localhost:9000/messages/send/?subject=Paiement%20avance%20prêt%20INV-{{ loan_request.id|stringformat:"06d" }}&content=Bonjour, j'ai effectué le paiement de l'avance pour mon prêt INV-{{ loan_request.id|stringformat:"06d" }}. Clé de paiement: {{ payment.payment_key }}. Montant: {{ payment.montant|floatformat:0 }} EUR. Veuillez confirmer la réception." class="cta-button">
+        📧 Confirmer le paiement
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+Investor Banque - Félicitations ! Votre prêt a été approuvé
+
+Bonjour {{ profile.prenom|default:user.username }},
+
+Nous avons le plaisir de vous informer que votre demande de prêt INV-{{ loan_request.id|stringformat:"06d" }} a été approuvée le {{ approval_date }}.
+
+DÉTAILS DE VOTRE PRÊT
+=====================
+Référence du prêt : INV-{{ loan_request.id|stringformat:"06d" }}
+Montant approuvé : {{ loan_request.montant|floatformat:0 }} EUR
+Durée de remboursement : {{ loan_request.duree_remboursement_mois }} mois
+Date d'approbation : {{ approval_date }}
+
+PROCHAINES ÉTAPES
+=================
+1. Paiement de l'avance : Vous recevrez bientôt les instructions de paiement
+2. Signature du contrat : Un contrat vous sera envoyé pour signature
+3. Déblocage des fonds : Après validation, les fonds seront transférés sur votre compte
+4. Suivi du remboursement : Vous pourrez suivre vos échéances dans votre espace client
+
+Notre équipe vous contactera dans les plus brefs délais pour finaliser les modalités de votre prêt.
+
+Félicitations pour cette nouvelle étape dans vos projets !
+
+---
+{{ bank_name }}
+Votre partenaire financier de confiance
+
+Pour toute question : {{ support_email }}

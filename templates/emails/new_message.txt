@@ -1,0 +1,15 @@
+Nouveau message de votre gestionnaire
+
+Bonjour {{ user.userprofile.prenom|default:user.username }},
+
+Sujet: {{ subject }}
+
+{{ content }}
+
+{% if loan_request %}
+Prêt concerné: INV-{{ loan_request.id|stringformat:"06d" }}
+{% endif %}
+
+Reçu le: {{ created_at }}
+Banque: {{ bank_name }}
+

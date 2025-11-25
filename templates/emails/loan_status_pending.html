@@ -1,0 +1,51 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Votre demande de prêt est en attente - Investor Banque{% endblock %}
+{% block content %}
+<div class="greeting">
+    Bonjour {{ profile.prenom|default:user.username }},
+</div>
+
+<div class="message">
+    <p>Nous vous informons que votre demande de prêt <strong>INV-{{ loan_request.id|stringformat:"06d" }}</strong> est maintenant au statut <strong>"En attente"</strong> depuis le {{ status_date }}.</p>
+    
+    <p>Votre demande est en cours d'examen par notre équipe.</p>
+</div>
+
+<div class="info-box">
+    <h3>📋 Détails de votre demande</h3>
+    <ul class="info-list">
+        <li>
+            <span class="info-label">Référence :</span>
+            <span class="info-value">INV-{{ loan_request.id|stringformat:"06d" }}</span>
+        </li>
+        <li>
+            <span class="info-label">Montant demandé :</span>
+            <span class="info-value">{{ loan_request.montant|floatformat:0 }} EUR</span>
+        </li>
+        <li>
+            <span class="info-label">Date de la demande :</span>
+            <span class="info-value">{{ loan_request.date_demande|date:"d/m/Y" }}</span>
+        </li>
+        <li>
+            <span class="info-label">Statut actuel :</span>
+            <span class="info-value">En attente d'examen</span>
+        </li>
+    </ul>
+</div>
+
+<div class="message">
+    <p><strong>Prochaines étapes :</strong></p>
+    <ul>
+        <li>Notre équipe examine actuellement votre demande</li>
+        <li>Vous serez notifié dès qu'une décision sera prise</li>
+        <li>Le délai d'examen est généralement de 2 à 5 jours ouvrables</li>
+    </ul>
+    
+    <p>Nous vous remercions pour votre patience et vous tiendrons informé de l'avancement de votre demande.</p>
+</div>
+
+<div class="cta-section">
+    <a href="mailto:{{ manager_email }}" class="cta-button">📧 Contacter notre équipe</a>
+</div>
+{% endblock %}
+

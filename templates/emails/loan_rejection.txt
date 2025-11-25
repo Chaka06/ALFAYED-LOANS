@@ -1,0 +1,28 @@
+Investor Banque - Décision concernant votre demande de prêt
+
+Bonjour {{ profile.prenom|default:user.username }},
+
+Nous vous informons que votre demande de prêt INV-{{ loan_request.id|stringformat:"06d" }} a été examinée le {{ rejection_date }}.
+
+Après analyse approfondie de votre dossier, nous sommes au regret de vous informer que votre demande n'a pas pu être approuvée pour le moment.
+
+DÉTAILS DE VOTRE DEMANDE
+========================
+Référence : INV-{{ loan_request.id|stringformat:"06d" }}
+Montant demandé : {{ loan_request.montant|floatformat:0 }} EUR
+Date de la demande : {{ loan_request.date_demande|date:"d/m/Y" }}
+
+PROCHAINES ÉTAPES POSSIBLES
+===========================
+- Vous pouvez soumettre une nouvelle demande après avoir amélioré votre profil
+- N'hésitez pas à nous contacter pour discuter de votre situation
+- Notre équipe est disponible pour vous conseiller sur les alternatives possibles
+
+Nous restons à votre entière disposition pour répondre à vos questions et vous accompagner dans vos projets futurs.
+
+---
+{{ bank_name }}
+Banque européenne - Votre partenaire financier de confiance
+
+Pour toute question : {{ manager_email }} ou {{ phone_support }}
+
